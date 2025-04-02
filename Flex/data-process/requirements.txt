@@ -1,0 +1,5 @@
+openai
+aptos-sdk
+pandas
+TA-Lib
+python-dotenv

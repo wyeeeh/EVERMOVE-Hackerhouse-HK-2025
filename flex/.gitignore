@@ -35,3 +35,6 @@ pnpm-lock.yaml
 example-collection/
 
 .next
+
+**/public/sw.js*
+**/public/workbox*.js*
