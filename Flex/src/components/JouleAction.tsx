@@ -92,7 +92,6 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
         }
       };
     // Corrected return statement using shadcn UI card
-    console.log(userPositions)
     return (
           <div className="space-y-2">
                 {/* <div>Transfer Result: {JSON.stringify(result)}</div> */}

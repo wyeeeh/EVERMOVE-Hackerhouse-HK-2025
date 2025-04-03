@@ -18,6 +18,8 @@ import { merkle, tokenList } from "@/components/Main";
 // Joule Finance Positions
 import { JoulePositions } from "@/components/JoulePositions";
 
+import { HyperionPositions } from "@/components/HyperionPositions";
+
 
 interface Asset {
   symbol: string;
@@ -178,6 +180,8 @@ export function Portfolio({ isClientReady, isaptosAgentReady }: PortfolioProps) 
               </TabsContent>
               <TabsContent value="joule">
                 <JoulePositions isaptosAgentReady={isaptosAgentReady}/>
+                <HyperionPositions isaptosAgentReady={isaptosAgentReady}/>
+                
               </TabsContent>
             </Tabs>
           </CardContent>
