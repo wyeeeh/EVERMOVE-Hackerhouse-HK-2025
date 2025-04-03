@@ -1,48 +1,19 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-
-
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
-
-import { aptosAgent, signer, aptos} from "@/components/Main";
-import { TokenContractAddress } from "@/components/JouleTokenPair";
-
-import {APTOS_COIN} from "@aptos-labs/ts-sdk" 
-import {createAptosTools} from "../../move-agent-kit/src"
-import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
+import { getWalletAddress} from "@/components/Main";
+import {getUserAllPositions, getBalance, Amount2Shares, Joule_lendToken, Joule_withdrawToken, Joule_borrowToken, Joule_repayToken} from "@/components/JouleUtil"
 
 interface AgentUIProps {
     isaptosAgentReady: boolean;
 }
 
-// transit amount to the shares
-async function Amount2Shares(amount: number, token: string) {
-  try {
-    const transaction = await aptos.view({
-          payload:{
-            function: '0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::pool::coins_to_shares',
-            functionArguments: ['@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b', amount],
-          }
-    })
-    //console.log("check1:", transaction)
-    return Number(transaction[0])
-
-  } catch (error: any) {
-    throw new Error(`transform to shares failed: ${error.message}`)
-  }
-}
-
-export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
-    const [result, setResult] = useState(null);
+export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
     const [balance, setBalance] = useState(Number);
-    const [txInfo, setTxInfo] = useState(null);
     const [userPositions, setUserPositions] = useState();
 
-    //const Agenttools = createAptosTools(aptosAgent);
     const [totalborrow, settotalborrow] = useState<number>(0);
     const [pborrow, setpborrow] = useState<string>("");
     const [totallend, settotallend] = useState<number>(0);
@@ -53,41 +24,23 @@ export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
     const [prepay, setprepay] = useState<string>("");
 
     
-    //const TESTUSDT = "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::test_tokens::USDT"
     const MAINUSDC = "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
     const FAUSDC = "@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
 
     const FAUSDT = "@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
     const MAINUSDT = "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b"
-
-    // 地址到代币名称的映射
-    const tokenAddressToName: { [key: string]: string } = {
-        [FAUSDC]: "Faucet-USDC",
-        [MAINUSDC]: "Mainnet-USDC",
-        [FAUSDT]: "Faucet-USDT",
-        [MAINUSDT]: "Mainnet-USDT"
-    }
-
-    // 将地址转换为可读的代币名称
-    const getTokenName = (address: string): string => {
-        return tokenAddressToName[address] || address
-    }
-    
-    //const TESTWETH = "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::test_tokens::WETH"
     
     useEffect(() => {
         if(!isaptosAgentReady) return
         async function fetchData() {
             try {
                 //get now positions in joule
-                const userPositions = await aptosAgent.getUserAllPositions(signer.getAddress());
+                const userPositions = await getUserAllPositions(getWalletAddress());
                 setUserPositions(userPositions);
                 
                 // Get Balance
-                const accountBalance = await aptosAgent.getBalance();
+                const accountBalance = await getBalance();
                 setBalance(accountBalance);
-                
-                
             } catch (error) {
                 console.error(error);
             }
@@ -101,11 +54,8 @@ export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
         if (!isaptosAgentReady) {
           return;
         }
-    
         try {
-            //await aptosAgent.borrowToken(totalborrow, TESTUSDT, "1", false)
-            await aptosAgent.lendToken(totallend * 1000000, MAINUSDC, plend, false, true)
-            //await aptosAgent.repayToken(totalborrow, TESTUSDT, "1", false)
+            await Joule_lendToken(totallend * 1000000, MAINUSDC, plend, false, true)
         } catch (error) {
           console.error(error);
         }
@@ -116,7 +66,7 @@ export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
         }
         try {
             const shares = await Amount2Shares(totalwithdraw * 1000000, FAUSDC)
-            await aptosAgent.withdrawToken(shares, MAINUSDC, pwithdraw, true)
+            await Joule_withdrawToken(shares, MAINUSDC, pwithdraw, true)
         } catch (error) {
           console.error(error);
         }
@@ -126,7 +76,7 @@ export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await aptosAgent.borrowToken(totalborrow * 1000000, MAINUSDC, pborrow, true)
+            await Joule_borrowToken(totalborrow * 1000000, MAINUSDC, pborrow, true)
         } catch (error) {
           console.error(error);
         }
@@ -136,8 +86,7 @@ export function MoveAIAgent({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            //const shares = await Amount2Shares(totalwithdraw * 1000000, FAUSDC)
-            await aptosAgent.repayToken(totalrepay * 1000000, MAINUSDC, prepay, true)
+            await Joule_repayToken(totalrepay * 1000000, MAINUSDC, prepay, true)
         } catch (error) {
           console.error(error);
         }

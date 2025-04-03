@@ -6,22 +6,23 @@ import { Portfolio } from "@/components/Portfolio";
 import { TradeUI } from "@/components/Trade";
 import { MerkleTokenPair } from "@/components/MerkleTokenPair";
 
-import { AgentRuntime, WalletSigner} from "../../move-agent-kit/src";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Aptos, AptosConfig, Network, Account} from "@aptos-labs/ts-sdk"
-import { MoveAIAgent } from "@/components/MoveAIAgent";
+import { useWallet, WalletContextState} from "@aptos-labs/wallet-adapter-react";
+import { Aptos, AptosConfig, Network, Account, AccountAddress} from "@aptos-labs/ts-sdk"
 
 // 全局共享的 Merkle 客户端实例
 export let merkle: MerkleClient;
 
 export let aptos: Aptos;
-export let signer: WalletSigner;
-export let aptosAgent: AgentRuntime;
 export const priceFeedMap: Map<string, PriceFeed> = new Map();
+export let wallet:  WalletContextState;
 
 // Export 前6个交易对
 export const tokenList = MerkleTokenPair.slice(0, 6);
 
+export function getWalletAddress(): AccountAddress {
+  const walletAddress = wallet?.account?.address!
+  return AccountAddress.fromString(walletAddress.toString())
+}
 
 export function Platform() {
   // Merkle客户端就绪状态
@@ -29,7 +30,7 @@ export function Platform() {
   const [isaptosAgentReady, setIsaptosAgentReady] = useState<boolean>(false);
   
   const account = Account.generate(); //the account is useless, so create a random account for the argument
-  const walletstate = useWallet();
+  wallet = useWallet();
       
   // 初始化Merkle客户端
   useEffect(() => {
@@ -56,8 +57,6 @@ export function Platform() {
         fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
       });
       aptos = new Aptos(aptosConfig);
-      signer = new WalletSigner(account, walletstate, Network.MAINNET); //use walletsigner
-      aptosAgent = new AgentRuntime(signer, aptos);
       setIsaptosAgentReady(true);
     };
     initMerkle();

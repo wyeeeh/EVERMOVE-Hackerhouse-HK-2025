@@ -12,7 +12,7 @@ import { OpenPosition, CloseAllPosition } from "@/entry-functions/merkleTrade";
 import { MerkleTradeCard } from "@/components/MerkleTradeCard";
 
 // Joule Finane Components
-import { MoveAIAgent } from "@/components/MoveAIAgent";
+import { JouleAction } from "@/components/JouleAction";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -144,9 +144,6 @@ export function TradeUI({ isClientReady, isaptosAgentReady }: TradeUIProps) {
             }
           );
         await aptosClient().waitForTransaction({transactionHash: committedTransaction.hash,});
-
-           
-
       
         queryClient.invalidateQueries({
             queryKey: ["apt-balance", account?.address],
@@ -266,7 +263,7 @@ export function TradeUI({ isClientReady, isaptosAgentReady }: TradeUIProps) {
         <ChartCandlestick />
       </div>
       <div className="space-y-2">
-      <MoveAIAgent isaptosAgentReady={isaptosAgentReady} />
+      <JouleAction isaptosAgentReady={isaptosAgentReady} />
       </div>
 
       </div>

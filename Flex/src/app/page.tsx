@@ -9,8 +9,6 @@ import { Header } from "@/components/Header";
 import { Welcome } from '@/components/Welcome';
 import { Platform } from "@/components/Main";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { MoveAIAgent } from '@/components/MoveAIAgent';
-import { AccountDetails } from '@/components/AccountDetails';
 
 function App() {
   const { connected } = useWallet();
