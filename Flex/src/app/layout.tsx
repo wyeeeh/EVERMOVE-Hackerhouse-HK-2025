@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   applicationName: "Flex",
   title: "Flex",
   description: "Your next-generation decentralized portfolio AI manager.",
+  icons: {
+    icon: "/icons/aptos.png",
+  },
   manifest: "/manifest.json",
 };
 
