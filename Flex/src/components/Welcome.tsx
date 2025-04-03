@@ -13,7 +13,7 @@ export function Welcome() {
                 <div className="space-y-4">
                   {/* 根据主题切换logo */}
                   <img 
-                    src={`/logo-archieved/logo-line-${
+                    src={`/logo/flex-logotype-${
                       (theme === 'system' ? systemTheme : theme) === 'dark' 
                         ? 'white' 
                         : 'dark'

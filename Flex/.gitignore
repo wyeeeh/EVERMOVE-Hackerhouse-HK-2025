@@ -38,3 +38,9 @@ example-collection/
 
 **/public/sw.js*
 **/public/workbox*.js*
+
+# llm
+.llm
+
+# logo
+**/.flex_logo/*

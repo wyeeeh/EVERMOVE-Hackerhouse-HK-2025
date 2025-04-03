@@ -19,8 +19,8 @@ export function Header({ connected }: { connected: boolean }) {
             <img 
                     src={
                       theme === 'system' 
-                        ? (systemTheme === 'dark' ? "/logo/logo-line-white.svg" : "/logo/logo-line-dark.svg")
-                        : (theme === 'dark' ? "/logo/logo-line-white.svg" : "/logo/logo-line-dark.svg")
+                        ? (systemTheme === 'dark' ? "/logo/flexfinance-logotype-white.svg" : "/logo/flexfinance-logotype-dark.svg")
+                        : (theme === 'dark' ? "/logo/flexfinance-logotype-white.svg" : "/logo/flexfinance-logotype-dark.svg")
                     } 
                     alt="Logo SVG" 
                     className="h-[50px] mx-auto" 
