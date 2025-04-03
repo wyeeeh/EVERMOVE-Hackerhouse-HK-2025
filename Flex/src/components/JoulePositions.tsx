@@ -2,7 +2,7 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 import {getWalletAddress} from "@/components/Main";
-import {getUserAllPositions, getBalance} from "@/components/JouleUtil"
+import {getUserAllPositions, getBalance} from "@/utils/JouleUtil"
 
 interface AgentUIProps {
     isaptosAgentReady: boolean;
