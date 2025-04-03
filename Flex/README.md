@@ -1,6 +1,6 @@
 # Flex: Smart On-Chain Portfolio & Trading Assistant
 ## Project Overview
-ProfitX is an intelligent, AI-powered portfolio manager and trading assistant, seamlessly integrated with Merkle Trade, a decentralized perpetual DEX built on the Aptos blockchain. ProfitX automates portfolio analysis, strategy recommendations, and execution of high-leverage trades using USDC on the Merkle platform. With support for up to 150X leverage, users can maximize their yield potential while maintaining risk management practices, all in a seamless, secure environment.
+Flex is an intelligent, AI-powered portfolio manager and trading assistant, seamlessly integrated with Merkle Trade, a decentralized perpetual DEX built on the Aptos blockchain. Flex automates portfolio analysis, strategy recommendations, and execution of high-leverage trades using USDC on the Merkle platform. With support for up to 150X leverage, users can maximize their yield potential while maintaining risk management practices, all in a seamless, secure environment.
 
 ## Core Features
 ### Portfolio Analysis
