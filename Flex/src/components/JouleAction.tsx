@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 import { getWalletAddress} from "@/components/Main";
-import {getUserAllPositions, getBalance, Amount2Shares, Joule_lendToken, Joule_withdrawToken, Joule_borrowToken, Joule_repayToken} from "@/components/JouleUtil"
+import {getUserAllPositions, getBalance, Amount2Shares, Joule_lendToken, Joule_withdrawToken, Joule_borrowToken, Joule_repayToken} from "@/utils/JouleUtil"
 
 interface AgentUIProps {
     isaptosAgentReady: boolean;
@@ -92,7 +92,6 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
         }
       };
     // Corrected return statement using shadcn UI card
-    console.log(userPositions)
     return (
           <div className="space-y-2">
                 {/* <div>Transfer Result: {JSON.stringify(result)}</div> */}

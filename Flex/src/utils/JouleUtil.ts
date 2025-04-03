@@ -2,7 +2,7 @@
 
 import { aptos, getWalletAddress} from "@/components/Main";
 import { AccountAddress, MoveStructId, convertAmountFromOnChainToHumanReadable} from "@aptos-labs/ts-sdk"
-import {view_addr, entry_addr, send_view_tx, send_entry_tx} from "@/components/Contract_interact"
+import {view_addr, entry_addr, send_view_tx, send_entry_tx} from "@/view-functions/Contract_interact"
 import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
 import { AptosPriceServiceConnection } from "@pythnetwork/pyth-aptos-js"
 

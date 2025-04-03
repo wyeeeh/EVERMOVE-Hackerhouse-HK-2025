@@ -9,12 +9,16 @@ import { MerkleTokenPair } from "@/components/MerkleTokenPair";
 import { useWallet, WalletContextState} from "@aptos-labs/wallet-adapter-react";
 import { Aptos, AptosConfig, Network, Account, AccountAddress} from "@aptos-labs/ts-sdk"
 
+//import { initHyperionSDK } from "@hyperfluid/sdk"
+
 // 全局共享的 Merkle 客户端实例
 export let merkle: MerkleClient;
 
 export let aptos: Aptos;
 export const priceFeedMap: Map<string, PriceFeed> = new Map();
 export let wallet:  WalletContextState;
+//export const cetusClmmSDK = initHyperfluidSDK({network: Network.MAINNET})
+//export const sdk = initHyperionSDK({network: Network.MAINNET})
 
 // Export 前6个交易对
 export const tokenList = MerkleTokenPair.slice(0, 6);
