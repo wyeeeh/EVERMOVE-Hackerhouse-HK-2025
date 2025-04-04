@@ -40,11 +40,6 @@ export function AriesPositions({ isaptosAgentReady , onTotalValueChange}: AgentU
     }, [isaptosAgentReady, onTotalValueChange]);
 
     const [isExpanded, setIsExpanded] = useState(true);
-    // return <div>
-    //         <h1>Aries Position</h1>
-    //         <p>USDC deposit: {Deposit} </p>
-    //         <p>APT Loan: {Loan} </p>
-    //       </div>
 
     // 将symbol转换为AntDesign组件名称的映射函数
       const getIconComponentName = (symbol: string): string => {

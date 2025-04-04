@@ -1,27 +1,28 @@
 "use client";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import * as AntIcons from "@ant-design/web3-icons";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 import { getWalletAddress } from "@/components/Main";
 import { getUserAllPositions, getBalance } from "@/utils/JouleUtil";
 
 // Token metadata
-import { coin_address, coin_type, coin_decimals } from "@/constants";
-
+import { coin_type, coin_decimals } from "@/constants";
+import { getaptprice } from "@/utils/HyperionUtil";
 interface JouleProps {
     isaptosAgentReady: boolean;
     onBalanceChange?: (balance: number) => void;
     onjouleValueChange?: (value: number) => void;  // 添加新的回调
   }
 
-  export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValueChange }: JouleProps) {
+export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValueChange }: JouleProps) {
   const [balance, setBalance] = useState(Number);
   const [userPositions, setUserPositions] = useState();
+  const [APT_PRICE, setAPT_PRICE] = useState(Number);
 
   useEffect(() => {
     if (!isaptosAgentReady) return;
@@ -43,6 +44,7 @@ interface JouleProps {
         const accountBalance = await getBalance();
         setBalance(accountBalance);
         onBalanceChange?.(accountBalance);
+        setAPT_PRICE(await getaptprice());
       } catch (error) {
         console.error(error);
       }
@@ -78,8 +80,6 @@ interface JouleProps {
         return address;
     }
   };
-
-  const APT_PRICE = 4.7;  // 添加 APT 价格常量
 
   const calculateTotalValue = (amount: string, token: string): number => {
     const numAmount = parseFloat(amount);

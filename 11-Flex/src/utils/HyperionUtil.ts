@@ -4,6 +4,7 @@ import { tickToPrice } from "@hyperionxyz/sdk"
 import { Hyperion_creatposition } from "@/entry-functions/hyperion";
 import { send_entry_tx } from "@/view-functions/Contract_interact";
 import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
+import { log } from "console";
 
 export const poolid = {
     apt_usdc: "0x925660b8618394809f89f8002e2926600c775221f43bf1919782b297a79400d8",
@@ -95,4 +96,9 @@ export async function create_hyperion_positions(amountapt: number, lowerprice: n
             }
         }
     await send_entry_tx(transaction)
+}
+
+export async function getaptprice() {
+    const aptpool = await Hyperion_getpool(poolid.apt_usdc)
+    return await tick2price(aptpool, aptpool[0].pool.currentTick)
 }
