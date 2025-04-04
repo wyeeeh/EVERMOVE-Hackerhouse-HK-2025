@@ -1,6 +1,6 @@
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 // Internal components
-import { LabelValueGrid } from "@/components/LabelValueGrid";
+import { LabelValueGrid } from "@/components/Archived/LabelValueGrid";
 
 export function WalletDetails() {
   const { wallet } = useWallet();

@@ -6,21 +6,11 @@ export function Welcome() {
     // console.log(theme)
 
     return (
-          <div className="w-full max-w-6xl p-8 relative">
+          <div id="WelcomePage">
               {/* 主要内容容器 - 居中布局 */}
-              <div className="relative space-y-8 text-center p-8">
+              <div className="relative space-y-8 text-center">
                 {/* Logo和标题区域 */}
                 <div className="space-y-4">
-                  {/* 根据主题切换logo */}
-                  <img 
-                    src={`/logo/flex-logotype-${
-                      (theme === 'system' ? systemTheme : theme) === 'dark' 
-                        ? 'white' 
-                        : 'dark'
-                    }.svg`}
-                    alt="Logo SVG" 
-                    className="w-[200px] mx-auto" 
-                  />
                   {/* 渐变标题 */}
                   <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-cyan-500 animate-gradient">
                     Welcome to Flex

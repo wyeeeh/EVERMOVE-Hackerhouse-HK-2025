@@ -9,7 +9,7 @@ import { aptosClient } from "@/utils/aptosClient";
 // Merkle Trade Components
 import { merkle, tokenList } from "@/components/Main";
 import { OpenPosition, CloseAllPosition } from "@/entry-functions/merkleTrade";
-import { MerkleTradeCard } from "@/components/MerkleTradeCard";
+import { StrategyCard } from "@/components/StrategyCard";
 
 // Joule Finane Components
 import { JouleAction } from "@/components/JouleAction";
@@ -219,19 +219,12 @@ export function TradeUI({ isClientReady, isaptosAgentReady, ishyperionsdkReady}:
       </div>
       <div className="space-y-2">
         {sortedCards.map(card => (
-          <MerkleTradeCard
-            key={card.symbol}
-            symbol={card.symbol}
-            amount={card.amount}
-            totalAmount={totalAmount}
-            leverageDefault={card.leverageDefault}
-            position={card.position}
-            isExpanded={expandedCard === card.symbol}
-            onToggle={() => handleToggle(card.symbol)}
-            onAmountChange={(newAmount) => handleAmountChange(card.symbol, newAmount)}
-            onLeverageChange={(newLeverage) => handleLeverageChange(card.symbol, newLeverage)}
-            onPositionChange={(newPosition) => handlePositionChange(card.symbol, newPosition)}
-          />
+          <StrategyCard
+            name="14 Days"
+            apy="335%"
+            risk={65}
+            onAmountChange={(value) => console.log(value)}
+        />
         ))}
       </div>
       {/* 添加底部栏 */}

@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 // Aptos Components
-import { AccountInfo } from "@/components/AccountInfo";
-import { MessageBoard } from "@/components/MessageBoard";
+import { AccountInfo } from "@/components/Archived/AccountInfo";
+import { MessageBoard } from "@/components/Archived/MessageBoard";
 import { NetworkInfo } from "@/components/NetworkInfo";
 // import { TopBanner } from "@/components/TopBanner";
-import { TransferAPT } from "@/components/TransferAPT";
-import { WalletDetails } from "@/components/WalletDetails";
+import { TransferAPT } from "@/components/Archived/TransferAPT";
+import { WalletDetails } from "@/components/Archived/WalletDetails";
 
 
 export function AccountDetails() {
