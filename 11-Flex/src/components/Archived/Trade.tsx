@@ -13,6 +13,7 @@ import { StrategyCard } from "@/components/StrategyCard";
 
 // Joule Finane Components
 import { JouleAction } from "@/components/JouleAction";
+import { AriesAction  } from "./AriesAction";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -255,6 +256,9 @@ export function TradeUI({ isClientReady, isaptosAgentReady, ishyperionsdkReady}:
       <div className="flex items-center justify-between space-y-0 pb-2">
         <h2 className="text-2xl font-bold">Joule Finance</h2>
         <ChartCandlestick />
+      </div>
+      <div className="space-y-2">
+      <AriesAction isaptosAgentReady={isaptosAgentReady} />
       </div>
       <div className="space-y-2">
       <JouleAction isaptosAgentReady={isaptosAgentReady} />
