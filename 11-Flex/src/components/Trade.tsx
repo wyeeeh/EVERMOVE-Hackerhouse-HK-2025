@@ -16,6 +16,7 @@ import { JouleAction } from "@/components/JouleAction";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { HyperionAction } from "./HyperionAction";
 
 
 
@@ -265,7 +266,9 @@ export function TradeUI({ isClientReady, isaptosAgentReady, ishyperionsdkReady}:
       <div className="space-y-2">
       <JouleAction isaptosAgentReady={isaptosAgentReady} />
       </div>
-
+      <div className="space-y-2">
+      <HyperionAction ishyperionsdkReady={ishyperionsdkReady} />
+      </div>
       </div>
     </div>
   );

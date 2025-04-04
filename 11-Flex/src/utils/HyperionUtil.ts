@@ -1,8 +1,10 @@
 import { Hyperion_getPostion, Hyperion_getpool } from "@/entry-functions/hyperion";
 // @ts-ignore
 import { tickToPrice } from "@hyperionxyz/sdk"
-import { Token as UniswapToken } from "@uniswap/sdk-core";
 import { AccountAddress } from "@aptos-labs/ts-sdk";
+import { Hyperion_creatposition } from "@/entry-functions/hyperion";
+import { send_entry_tx } from "@/view-functions/Contract_interact";
+import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
 
 export const poolid = {
     apt_usdc: "0x925660b8618394809f89f8002e2926600c775221f43bf1919782b297a79400d8",
@@ -31,8 +33,12 @@ async function get_apy(id: string) : Promise<number> {
 }
 
 
-async function tick2price(id: string, tick: number) {
-    const poolinfo = await Hyperion_getpool(id)
+async function get_current_tick(poolinfo: any) {
+    return poolinfo[0].pool.currentTick;
+}
+
+
+async function tick2price(poolinfo: any, tick: number) {
     const decimals1 = poolinfo[0].pool.token1Info.decimals
     const decimals2 = poolinfo[0].pool.token2Info.decimals
     const base = 1.0001;
@@ -42,22 +48,51 @@ async function tick2price(id: string, tick: number) {
     return adjustedPrice
 }
 
+async function price2tick(poolinfo: any, price: number) {   
+    const decimalsDiff = poolinfo[0].pool.token2Info.decimals - poolinfo[0].pool.token1Info.decimals; // 注意顺序：token0 是分母
+  const adjustedPrice = price * Math.pow(10, decimalsDiff);
+  const base = 1.0001;
+  const tick = Math.log(adjustedPrice) / Math.log(base);
+  return Math.round(tick);
+}
+
 export async function get_hyperion_positions() {
     const postions = await Hyperion_getPostion()
     const mypositions: Position[] = [];
     
-    postions.forEach(async (item: any) =>{ 
+    postions.forEach(async (item: any) => {
         const id = item.position.poolId
-        await tick2price(id, item.position.pool.currentTick)
+        const poolinfo = await Hyperion_getpool(id)
+        console.log(item.position.pool.currentTick, item.position.tickUpper, item.position.tickLower)
+        await tick2price(poolinfo, item.position.pool.currentTick)
         mypositions.push({
           pair: poolid2string[id],
           value: item.value,
-          current_price: await tick2price(id, item.position.pool.currentTick),
-            upper_price: await tick2price(id, item.position.tickUpper),
-            lower_price: await tick2price(id, item.position.tickLower),
+          current_price: await tick2price(poolinfo, item.position.pool.currentTick),
+            upper_price: await tick2price(poolinfo, item.position.tickUpper),
+            lower_price: await tick2price(poolinfo, item.position.tickLower),
             estapy : await get_apy(item.position.poolId),
         });
       });
     console.log(mypositions)
     return mypositions
+}
+
+export async function create_hyperion_positions(amountapt: number, lowerprice: number, upperprice: number) {
+    const poolinfo = await Hyperion_getpool(poolid.apt_usdc)
+    const currencytick =  await get_current_tick(poolinfo)
+    const lower = await price2tick(poolinfo, lowerprice)
+    const upper = await price2tick(poolinfo, upperprice)
+    console.log(lower, upper)
+    //const lower = currencytick - 1000;
+    //const upper = currencytick + 1000;
+    const params = await Hyperion_creatposition(amountapt, currencytick, lower, upper)
+    const transaction : InputTransactionData = {
+            data:{
+                function: params.function,
+                functionArguments: params.functionArguments,
+                typeArguments: params.typeArguments
+            }
+        }
+    await send_entry_tx(transaction)
 }
