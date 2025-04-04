@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Joule_borrowToken, Joule_lendToken } from "@/utils/JouleUtil"
 import { Aries_borrowToken, Aries_lendToken } from "@/utils/AriesUtil"
-import { coin_address_map, coin_is_fungible } from "@/constants"
+import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants"
 import { getaptprice } from "@/utils/HyperionUtil"
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,14 +107,14 @@ export function ExeuteTrade() {
         //Lend Joule:
         const aptprice = await getaptprice();
         const pos1 = strategy.platforms?.Joule?.positions[0]!;
-        const amount1 = allocation_num(pos1?.allocation)
+        const amount1 = allocation_num(pos1?.allocation) * Math.pow(10, coin_decimals_map[pos1.asset])
         console.log(pos1, amount1);
-        await Joule_lendToken(amount1, coin_address_map[pos1.asset], '2', false, coin_is_fungible[pos1.asset])
+        await Joule_lendToken(amount1 , coin_address_map[pos1.asset], '2', false, coin_is_fungible[pos1.asset])
         //Borrow Joule: 
         await Joule_borrowToken(amount1 / aptprice * 0.7, coin_address_map["APT"], "2", true)
         //Lend Aries:
         const pos2 = strategy.platforms?.Aries?.positions[0]!;
-        const amount2 = allocation_num(pos2?.allocation)
+        const amount2 = allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
         console.log(pos2, amount2);
         await Aries_lendToken(amount2, pos2.asset)
         //Borrow Aries:

@@ -36,3 +36,9 @@ export const coin_decimals = {
     USDT: 6,
 } as const;
 
+export const coin_decimals_map: Record<string, number>  = {
+    "APT": 8,
+    "USDC": 6,
+    "USDT": 6,
+} as const;
+
