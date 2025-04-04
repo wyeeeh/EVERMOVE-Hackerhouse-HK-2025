@@ -10,10 +10,10 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 import { get_hyperion_positions, Position } from "@/utils/HyperionUtil";
 interface HyperionProps {
   ishyperionsdkReady: boolean;
-  onTotalValueChange?: (value: number) => void;  // 添加回调属性
+  onhyperionValueChange?: (value: number) => void;  // 添加回调属性
 }
 
-export function HyperionPositions({ ishyperionsdkReady, onTotalValueChange }: HyperionProps) {
+export function HyperionPositions({ ishyperionsdkReady, onhyperionValueChange }: HyperionProps) {
   const [positions, setPositions] = useState<Position[]>([]);
   useEffect(() => {
     if (!ishyperionsdkReady) return;
@@ -25,7 +25,7 @@ export function HyperionPositions({ ishyperionsdkReady, onTotalValueChange }: Hy
 
         // 计算并传递总价值
         const totalValue = data.reduce((total, position) => total + position.value, 0);
-        onTotalValueChange?.(totalValue);
+        onhyperionValueChange?.(totalValue);
       } catch (error) {
         console.error(error);
       }
@@ -33,7 +33,7 @@ export function HyperionPositions({ ishyperionsdkReady, onTotalValueChange }: Hy
     fetchData();
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [ishyperionsdkReady, onTotalValueChange]);
+  }, [ishyperionsdkReady, onhyperionValueChange]);
 
   console.log("Positions:", positions);
 

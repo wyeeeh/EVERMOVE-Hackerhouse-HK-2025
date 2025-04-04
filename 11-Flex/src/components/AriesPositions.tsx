@@ -3,7 +3,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 import {getWalletAddress} from "@/components/Main";
 import { getUserDeposit, getUserLoan, Position, getAllPostion} from "@/utils/AriesUtil";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronUp, ChevronDown } from "lucide-react";
@@ -11,9 +11,10 @@ import * as AntIcons from "@ant-design/web3-icons";
 
 interface AgentUIProps {
     isaptosAgentReady: boolean;
+    onTotalValueChange?: (value: number) => void;  // 添加回调属性
 }
 
-export function AriesPositions({ isaptosAgentReady }: AgentUIProps) {
+export function AriesPositions({ isaptosAgentReady , onTotalValueChange}: AgentUIProps) {
     //const [Deposit, setDeposit] = useState();
     //const [Loan, setLoan] = useState();
     const [positions, setPositions] = useState<Position[]>([]);
@@ -27,6 +28,8 @@ export function AriesPositions({ isaptosAgentReady }: AgentUIProps) {
                 //const loans = await getUserLoan(getWalletAddress(), "APT")
                 const data = await getAllPostion(getWalletAddress()) 
                 setPositions(data)
+                const totalValue = data.reduce((total, position) => total + position.lend, 0);
+                onTotalValueChange?.(totalValue);
             } catch (error) {
                 console.error(error);
             }
@@ -34,7 +37,7 @@ export function AriesPositions({ isaptosAgentReady }: AgentUIProps) {
         fetchData();
         const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
-    }, [isaptosAgentReady]);
+    }, [isaptosAgentReady, onTotalValueChange]);
 
     const [isExpanded, setIsExpanded] = useState(true);
     // return <div>
@@ -56,6 +59,10 @@ export function AriesPositions({ isaptosAgentReady }: AgentUIProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Aries</CardTitle>
+              <CardDescription>
+              Total Value: ${positions.reduce((total, position) => total + position.lend, 0).toFixed(2)}
+            </CardDescription>
+          
               <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
                 <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
                   <ChevronDown size={20} />
