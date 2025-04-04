@@ -58,7 +58,7 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
 
   const totalPosition = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.position, 0)
-  }, [])
+  }, [chartData])
 
 
   return (
