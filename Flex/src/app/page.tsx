@@ -1,9 +1,5 @@
 "use client";
 
-// Internal UI Components
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
 // Main Components
 import { Header } from "@/components/Header";
 import { Welcome } from '@/components/Welcome';
