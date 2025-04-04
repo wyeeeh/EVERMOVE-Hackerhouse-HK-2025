@@ -170,7 +170,7 @@ async def portfolio_manager(state: State):
     ## 输出格式要求
     结果必须使用以下JSON格式，以不同时间段作为最外层：
     {{
-      "14days": {{
+      "14 Days": {{
         "expected_return": <预期收益百分比>,
         "risk_index": <风险指数，范围1-100>,
         "platforms": {{
@@ -211,17 +211,17 @@ async def portfolio_manager(state: State):
           }}
         }}
       }},
-      "30days": {{
+      "30 Days": {{
         "expected_return": <预期收益百分比>,
         "risk_index": <风险指数，范围1-100>,
         "platforms": {{ ... 与14days格式相同 ... }}
       }},
-      "90days": {{
+      "90 Days": {{
         "expected_return": <预期收益百分比>,
         "risk_index": <风险指数，范围1-100>,
         "platforms": {{ ... 与14days格式相同 ... }}
       }},
-      "180days": {{
+      "180 Days": {{
         "expected_return": <预期收益百分比>,
         "risk_index": <风险指数，范围1-100>,
         "platforms": {{ ... 与14days格式相同 ... }}
@@ -273,6 +273,7 @@ async def portfolio_manager(state: State):
     - 请直接输出JSON，不要使用Markdown代码块或其他格式
     - 必须严格按照上述JSON格式输出
     - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%
+    - est APY 要实际计算，忠于原始数据，是仓位的加权平均，不要受其他影响
     """
 
     # 调用LLM获取投资组合建议
