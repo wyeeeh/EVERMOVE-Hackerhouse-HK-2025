@@ -1,5 +1,3 @@
-"use client"
-
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
@@ -19,62 +17,57 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
 const chartData = [
-    {
-      term: "14 days",
-      joule: 30,
-      aries: 12,
-      hyperion: 40,
-    }
-  ];
-  
-  const chartConfig = {
-    joule: {
-      label: "Joule",
-      color: "hsl(var(--chart-1))",
-    },
-    aries: {
-      label: "Aries",
-      color: "hsl(var(--chart-2))",
-    },
-    hyperion: {
-      label: "Hyperion",
-      color: "hsl(var(--chart-3))",
-    },
-  } satisfies ChartConfig
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig
 
 export function PortfolioBarChart() {
   return (
     <Card>
-      {/* <CardHeader>
+      <CardHeader>
         <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
-      </CardHeader> */}
+      </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart 
-            layout="vertical" 
-            data={chartData} 
-            height={60}
-            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-          >
+          <BarChart accessibilityLayer data={chartData}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <ChartLegend content={<ChartLegendContent />} />
             <Bar
-              dataKey="joule"
+              dataKey="desktop"
               stackId="a"
-              fill={chartConfig.joule.color}
-              radius={[4, 0, 0, 4]}
+              fill="var(--color-desktop)"
+              radius={[0, 0, 4, 4]}
             />
             <Bar
-              dataKey="aries"
+              dataKey="mobile"
               stackId="a"
-              fill={chartConfig.aries.color}
-            />
-            <Bar
-              dataKey="hyperion"
-              stackId="a"
-              fill={chartConfig.hyperion.color}
-              radius={[0, 4, 4, 0]}
+              fill="var(--color-mobile)"
+              radius={[4, 4, 0, 0]}
             />
           </BarChart>
         </ChartContainer>
