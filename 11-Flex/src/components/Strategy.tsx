@@ -1,4 +1,5 @@
 import { StrategyCard } from "@/components/StrategyCard";
+import { PortfolioBarChart } from "@/components/StackedBarChart";
 import { ChevronDown, ChevronUp,ChartCandlestick } from "lucide-react";
 
 export function Strategy() {
@@ -13,6 +14,7 @@ export function Strategy() {
       <div className="flex items-center justify-between space-y-0 pb-2">
         <h2 className="text-2xl font-bold">Strategy</h2>
         <ChartCandlestick />
+        <PortfolioBarChart/>
       </div>
           <div id="strategy-grid" className="grid grid-cols-2 gap-4">
           <StrategyCard
