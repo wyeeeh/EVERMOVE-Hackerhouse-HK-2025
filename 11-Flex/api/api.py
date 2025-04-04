@@ -3,9 +3,13 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import uvicorn
 from typing import Optional, Dict, Any
-from fastapi.middleware.cors import CORSMiddleware
+import json
+import os
 
 from multi_agent_system import run_investment_advisor
+
+# 添加CORS中间件，允许跨域请求
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="DeFi投资顾问API",
@@ -13,7 +17,6 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# 添加CORS中间件，允许跨域请求
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 允许所有来源，生产环境中应限制为特定域名
@@ -58,6 +61,17 @@ async def generate_portfolio(request: InvestmentRequest):
         result = await run_investment_advisor(
             risk_preference=request.risk_preference, custom_prompt=request.custom_prompt
         )
+
+        # 将结果保存为JSON文件
+        # 获取当前文件所在目录
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, "strategy.json")
+
+        # 写入JSON文件
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+
+        print(f"策略已保存至: {file_path}")
 
         return result
     except Exception as e:
