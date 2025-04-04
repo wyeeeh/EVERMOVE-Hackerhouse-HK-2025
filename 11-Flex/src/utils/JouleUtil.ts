@@ -170,7 +170,6 @@ export async function Joule_repayToken(amount: number,
 	positionId: string,
 	fungibleAsset: boolean
 ): Promise<{ hash: string; positionId: string }> {
-
     const transaction : InputTransactionData = {
 		data:{
 			function: fungibleAsset ? entry_addr.Joule_repay_fa : entry_addr.Joule_repay,

@@ -17,18 +17,21 @@ interface JouleProps {
     isaptosAgentReady: boolean;
     onBalanceChange?: (balance: number) => void;
     onjouleValueChange?: (value: number) => void;  // 添加新的回调
-  }
+}
 
 export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValueChange }: JouleProps) {
   const [balance, setBalance] = useState(Number);
   const [userPositions, setUserPositions] = useState();
   const [APT_PRICE, setAPT_PRICE] = useState(Number);
 
+  //const APT_PRICE = 4.9
   useEffect(() => {
     if (!isaptosAgentReady) return;
     async function fetchData() {
       try {
         //get now positions in joule
+        const nowprice = await getaptprice()
+        setAPT_PRICE(nowprice);
         const userPositions = await getUserAllPositions(getWalletAddress());
         setUserPositions(userPositions);
         console.log(userPositions)
@@ -44,7 +47,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValu
         const accountBalance = await getBalance();
         setBalance(accountBalance);
         onBalanceChange?.(accountBalance);
-        setAPT_PRICE(await getaptprice());
+        console.log(nowprice)
       } catch (error) {
         console.error(error);
       }
@@ -52,7 +55,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValu
     fetchData();
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [isaptosAgentReady, onjouleValueChange]);
+  }, [isaptosAgentReady, onjouleValueChange, APT_PRICE]);
 
   const calculateActualAmount = (value: number, token: string): string => {
     let decimals = 0; // 默认 decimals

@@ -25,6 +25,7 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
 
     
     const MAINUSDC = "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
+    
     const FAUSDC = "@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
 
     const FAUSDT = "@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
@@ -55,7 +56,7 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await Joule_lendToken(totallend * 1000000, MAINUSDC, plend, false, true)
+            await Joule_lendToken(totallend * 1000000, MAINUSDC, "2", false, true)
         } catch (error) {
           console.error(error);
         }
@@ -66,7 +67,7 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
         }
         try {
             const shares = await Amount2Shares(totalwithdraw * 1000000, FAUSDC)
-            await Joule_withdrawToken(shares, MAINUSDC, pwithdraw, true)
+            await Joule_withdrawToken(shares, MAINUSDC, "2", true)
         } catch (error) {
           console.error(error);
         }
@@ -76,7 +77,7 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await Joule_borrowToken(totalborrow * 1000000, MAINUSDC, pborrow, true)
+            await Joule_borrowToken(totalborrow * 1000000, MAINUSDC, "2", true)
         } catch (error) {
           console.error(error);
         }
@@ -86,7 +87,7 @@ export function JouleAction({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await Joule_repayToken(totalrepay * 1000000, MAINUSDC, prepay, true)
+            await Joule_repayToken(totalrepay * 1000000, MAINUSDC, "2", true)
         } catch (error) {
           console.error(error);
         }
