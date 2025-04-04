@@ -1,0 +1,238 @@
+{
+  "14days": {
+    "expected_return": 2.5,
+    "risk_index": 30,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "25%",
+            "rationale": "较低的风险，稳定的收益"
+          },
+          {
+            "asset": "USDT",
+            "action": "lend",
+            "allocation": "25%",
+            "rationale": "较低的风险，适合保守投资"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "APT",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "关注APT生态系统机会，中等风险"
+          },
+          {
+            "asset": "amAPT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "中等风险，潜在收益"
+          },
+          {
+            "asset": "stAPT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "0%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.86,
+              "upper": 6.13
+            },
+            "rationale": "短期价格波动较大，保守策略不参与流动性池"
+          }
+        ]
+      }
+    }
+  },
+  "30days": {
+    "expected_return": 3.5,
+    "risk_index": 40,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "较低的风险，稳定的收益"
+          },
+          {
+            "asset": "USDT",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "较低的风险，适合保守投资"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "APT",
+            "action": "lend",
+            "allocation": "25%",
+            "rationale": "关注APT生态系统机会，中等风险"
+          },
+          {
+            "asset": "amAPT",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "中等风险，潜在收益"
+          },
+          {
+            "asset": "stAPT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "0%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.86,
+              "upper": 6.13
+            },
+            "rationale": "中短期价格波动较大，保守策略不参与流动性池"
+          }
+        ]
+      }
+    }
+  },
+  "90days": {
+    "expected_return": 5.0,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "较低的风险，稳定的收益"
+          },
+          {
+            "asset": "USDT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "较低的风险，适合保守投资"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "APT",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "关注APT生态系统机会，中等风险"
+          },
+          {
+            "asset": "amAPT",
+            "action": "lend",
+            "allocation": "25%",
+            "rationale": "中等风险，潜在收益"
+          },
+          {
+            "asset": "stAPT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "0%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.5,
+              "upper": 6.5
+            },
+            "rationale": "中期价格波动较大，保守策略不参与流动性池"
+          }
+        ]
+      }
+    }
+  },
+  "180days": {
+    "expected_return": 7.0,
+    "risk_index": 60,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "10%",
+            "rationale": "较低的风险，稳定的收益"
+          },
+          {
+            "asset": "USDT",
+            "action": "lend",
+            "allocation": "10%",
+            "rationale": "较低的风险，适合保守投资"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "APT",
+            "action": "lend",
+            "allocation": "35%",
+            "rationale": "关注APT生态系统机会，中等风险"
+          },
+          {
+            "asset": "amAPT",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "中等风险，潜在收益"
+          },
+          {
+            "asset": "stAPT",
+            "action": "lend",
+            "allocation": "15%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "0%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.0,
+              "upper": 7.0
+            },
+            "rationale": "长期价格波动较大，保守策略不参与流动性池"
+          }
+        ]
+      }
+    }
+  }
+}

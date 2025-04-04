@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 // Internal components
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { aptosClient } from "@/utils/aptosClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

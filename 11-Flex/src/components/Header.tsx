@@ -1,10 +1,11 @@
 // import ui components
-import { ModeToggle } from '@/components/theme-toggle';
+import { ModeToggle } from '@/components/ui/theme-toggle';
 import { useTheme } from "next-themes";
 
 
 // import Aptos Wallet Selector
 import { WalletSelector } from "./WalletSelector";
+import { NetworkInfo } from "@/components/NetworkInfo";
 
 
 export function Header({ connected }: { connected: boolean }) {
@@ -12,7 +13,7 @@ export function Header({ connected }: { connected: boolean }) {
   const { theme, systemTheme } = useTheme();
   
   return (
-    <div className="flex items-center justify-between p-8">
+    <div className="flex items-center justify-between">
       <div>
         <img 
           src={
@@ -27,6 +28,7 @@ export function Header({ connected }: { connected: boolean }) {
       <div className="flex items-center gap-4">
         <ModeToggle />
         <WalletSelector />
+        <NetworkInfo />
       </div>
     </div>
   );

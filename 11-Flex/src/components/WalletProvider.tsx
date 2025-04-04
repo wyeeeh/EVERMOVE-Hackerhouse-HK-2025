@@ -1,7 +1,7 @@
 "use client";
 
 // Internal components
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 // Internal constants
 import { APTOS_API_KEY, NETWORK } from "@/constants";
 import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";

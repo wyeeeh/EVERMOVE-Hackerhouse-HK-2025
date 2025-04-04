@@ -7,7 +7,7 @@ import { WalletProvider } from "@/components/WalletProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { WrongNetworkAlert } from "@/components/WrongNetworkAlert";
 
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/ui/theme-provider"
 
 import "./globals.css";
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "Flex",
   description: "Your next-generation decentralized portfolio AI manager.",
   icons: {
-    icon: "/icons/aptos.png",
+    icon: "/logo/flex-logo-dark.svg",
   },
   manifest: "/manifest.json",
 };

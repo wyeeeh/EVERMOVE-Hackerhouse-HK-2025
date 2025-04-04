@@ -10,25 +10,25 @@ function App() {
   const { connected } = useWallet();
 
   return (
-    <>
-      <Header connected={connected} />
+    <div className="min-h-screen flex flex-col">
+      <div id="Header" className="py-8 px-10">
+        <Header connected={connected} />
+      </div>
       
-      <div className="flex items-center flex-col">
+      <div id="MainPage" className="flex-1 flex flex-col container mx-auto ">
         {connected ? (
           <Platform />
         ) : (
-          // Welcome Page to guide connect wallet - @Runze
-          <Welcome />
+          // Welcome Page to guide connect wallet
+          <div className="flex-1 flex items-center justify-center">
+            <Welcome />
+          </div>
         )}
       </div>
 
-      {/* 背景动画效果 */}
-      {/* 颜色背景 */}
-      <div className="fixed inset-0 -z-10 w-screen h-screen bg-gradient-to-r from-indigo-500/10 to-cyan-500/10"> 
-      {/* 格纹背景 */}
-        <div className="absolute inset-0 -z-10 w-full h-full bg-grid-white/[0.02] bg-grid-pattern" />
-      </div>
-    </>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 -z-10 bg-grid-pattern" />
+    </div>
   );
 }
 
