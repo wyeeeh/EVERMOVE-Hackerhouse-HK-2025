@@ -57,7 +57,7 @@
       "Aries": {
         "positions": [
           {
-            "asset": "APT",
+            "asset": "USDC",
             "action": "lend",
             "allocation": "30%",
             "rationale": "APT的中期前景看好"
@@ -98,7 +98,7 @@
       "Aries": {
         "positions": [
           {
-            "asset": "ETH",
+            "asset": "USDC",
             "action": "lend",
             "allocation": "20%",
             "rationale": "ETH在未来的潜力大"
@@ -139,7 +139,7 @@
       "Aries": {
         "positions": [
           {
-            "asset": "ETH",
+            "asset": "USDC",
             "action": "lend",
             "allocation": "20%",
             "rationale": "中长期看好ETH的增长"

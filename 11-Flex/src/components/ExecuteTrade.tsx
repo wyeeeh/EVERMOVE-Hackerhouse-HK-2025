@@ -136,17 +136,15 @@ export function ExeuteTrade() {
     try {
         const strategy : TradeStrategy = getCurrentStrategy();
         //Lend Joule:
-        const aptprice = await getaptprice();
+        let aptprice = await getaptprice();
         const pos1 = strategy.platforms?.Joule?.positions[0]!;
         const amount1 = Number(amount)*allocation_num(pos1?.allocation) * Math.pow(10, coin_decimals_map[pos1.asset])
-        console.log(pos1, amount1);
         await Joule_lendToken(amount1 , coin_address_map[pos1.asset], '2', false, coin_is_fungible[pos1.asset])
         //Borrow Joule: 
         await Joule_borrowToken(Number(Math.floor(amount1 / aptprice * 0.7 * 100)), coin_address_map["APT"], "2", false)
         //Lend Aries:
         const pos2 = strategy.platforms?.Aries?.positions[0]!;
         const amount2 = Number(amount)*allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
-        console.log(pos2, amount2);
         await Aries_lendToken(amount2, pos2.asset)
         //Borrow Aries:
         await Aries_borrowToken(Number(Math.floor(amount2 / aptprice * 0.7 * 100)), "APT")
@@ -154,7 +152,7 @@ export function ExeuteTrade() {
         const pos3= strategy.platforms?.Hyperion?.positions[0]!;
         let amount3 = Number(amount)*allocation_num(pos3?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
         amount3 = Math.floor(amount3 / aptprice * 100 / 2);
-        console.log(amount3);
+        aptprice = await getaptprice();
         await create_hyperion_positions(amount3, pos3.price_range!.lower, pos3.price_range!.upper);
     } catch (error) {
       console.error("执行交易失败:", error);
