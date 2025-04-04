@@ -1,6 +1,6 @@
 {
-  "14days": {
-    "expected_return": 21.3,
+  "14 Days": {
+    "expected_return": 7.5,
     "risk_index": 85,
     "platforms": {
       "Joule": {
@@ -8,18 +8,18 @@
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "60%",
-            "rationale": "选择高APR和稳定的流动性"
+            "allocation": "40%",
+            "rationale": "高APR可以获得良好的短期收益"
           }
         ]
       },
       "Aries": {
         "positions": [
           {
-            "asset": "USDC",
+            "asset": "APT",
             "action": "lend",
-            "allocation": "30%",
-            "rationale": "利用相对较高利率的借贷服务"
+            "allocation": "20%",
+            "rationale": "利用APT的高潜力短期增长"
           }
         ]
       },
@@ -28,20 +28,20 @@
           {
             "asset": "APT-USDT",
             "action": "add_liquidity",
-            "allocation": "10%",
-            "fee_tier": 0.3,
+            "allocation": "40%",
+            "fee_tier": 0.05,
             "price_range": {
-              "lower": 5.0,
-              "upper": 6.5
+              "lower": 4.7,
+              "upper": 5.0
             },
-            "rationale": "提供流动性以获取交易费，价格区间符合市场预期"
+            "rationale": "短期价格预测吸引，集中流动性"
           }
         ]
       }
     }
   },
-  "30days": {
-    "expected_return": 21.3,
+  "30 Days": {
+    "expected_return": 9.0,
     "risk_index": 75,
     "platforms": {
       "Joule": {
@@ -49,18 +49,18 @@
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "50%",
-            "rationale": "稳定收益，风险适中"
+            "allocation": "30%",
+            "rationale": "维持稳定收益"
           }
         ]
       },
       "Aries": {
         "positions": [
           {
-            "asset": "USDC",
+            "asset": "APT",
             "action": "lend",
             "allocation": "30%",
-            "rationale": "选择高APR产品增强收益"
+            "rationale": "APT的中期前景看好"
           }
         ]
       },
@@ -69,21 +69,21 @@
           {
             "asset": "APT-USDT",
             "action": "add_liquidity",
-            "allocation": "20%",
+            "allocation": "40%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.5,
-              "upper": 7.0
+              "lower": 4.6,
+              "upper": 5.4
             },
-            "rationale": "激活市场流动性，使用适度风险的价格区间"
+            "rationale": "考虑到中期的波动性，扩大价格范围"
           }
         ]
       }
     }
   },
-  "90days": {
-    "expected_return": 21.3,
-    "risk_index": 65,
+  "90 Days": {
+    "expected_return": 5.0,
+    "risk_index": 60,
     "platforms": {
       "Joule": {
         "positions": [
@@ -91,17 +91,58 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "40%",
-            "rationale": "确保流动性和稳定收益"
+            "rationale": "保持收益稳健"
           }
         ]
       },
       "Aries": {
         "positions": [
           {
+            "asset": "ETH",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "ETH在未来的潜力大"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "40%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.5,
+              "upper": 6.5
+            },
+            "rationale": "较宽的价格区间以应对市场波动"
+          }
+        ]
+      }
+    }
+  },
+  "180 Days": {
+    "expected_return": 4.0,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "30%",
-            "rationale": "利用低风险的资产获取收益"
+            "allocation": "50%",
+            "rationale": "稳健收益，降低风险"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "ETH",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "中长期看好ETH的增长"
           }
         ]
       },
@@ -114,52 +155,71 @@
             "fee_tier": 0.3,
             "price_range": {
               "lower": 4.0,
-              "upper": 8.0
+              "upper": 7.0
             },
-            "rationale": "考虑到长期趋势，设置更宽的价格区间"
+            "rationale": "极大范围组合应对市场不确定性"
           }
         ]
       }
     }
   },
-  "180days": {
-    "expected_return": 21.3,
+  "14days": {
+    "expected_return": 0,
     "risk_index": 50,
     "platforms": {
       "Joule": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "30%",
-            "rationale": "风险低且流动性强的选择"
-          }
-        ]
+        "positions": []
       },
       "Aries": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "30%",
-            "rationale": "稳定收益产品，风险相对较低"
-          }
-        ]
+        "positions": []
       },
       "Hyperion": {
-        "positions": [
-          {
-            "asset": "APT-USDT",
-            "action": "add_liquidity",
-            "allocation": "40%",
-            "fee_tier": 0.05,
-            "price_range": {
-              "lower": 3.5,
-              "upper": 10.0
-            },
-            "rationale": "长期投资，适当分散风险设置更宽价格区间"
-          }
-        ]
+        "positions": []
+      }
+    }
+  },
+  "30days": {
+    "expected_return": 0,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": []
+      },
+      "Aries": {
+        "positions": []
+      },
+      "Hyperion": {
+        "positions": []
+      }
+    }
+  },
+  "90days": {
+    "expected_return": 0,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": []
+      },
+      "Aries": {
+        "positions": []
+      },
+      "Hyperion": {
+        "positions": []
+      }
+    }
+  },
+  "180days": {
+    "expected_return": 0,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": []
+      },
+      "Aries": {
+        "positions": []
+      },
+      "Hyperion": {
+        "positions": []
       }
     }
   }
