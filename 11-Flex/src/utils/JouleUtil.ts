@@ -47,7 +47,8 @@ export async function getUserAllPositions(userAddress: AccountAddress | string):
   }
   const transaction = await send_view_tx(payload)
 	const cleanedTransaction = removeLastInterestRateIndex(transaction)
-	return cleanedTransaction
+	console.log(cleanedTransaction[0].positions_map.data[1])
+	return cleanedTransaction[0].positions_map.data[1]
 }
 
 export async function getBalance(mint?: string | MoveStructId): Promise<number> {
