@@ -17,7 +17,7 @@ export let merkle: MerkleClient;
 export let aptos: Aptos;
 export const priceFeedMap: Map<string, PriceFeed> = new Map();
 export let wallet:  WalletContextState;
-export const sdk = initHyperionSDK({network: Network.MAINNET})
+export let hyperionsdk: any; 
 
 // Export 前6个交易对
 export const tokenList = MerkleTokenPair.slice(0, 6);
@@ -31,7 +31,8 @@ export function Platform() {
   // Merkle客户端就绪状态
   const [isClientReady, setIsClientReady] = useState<boolean>(false);
   const [isaptosAgentReady, setIsaptosAgentReady] = useState<boolean>(false);
-  
+  const [ishyperionsdkReady, setIshyperionsdkReady] = useState<boolean>(false);
+
   wallet = useWallet();
       
   // 初始化Merkle客户端
@@ -61,18 +62,23 @@ export function Platform() {
       aptos = new Aptos(aptosConfig);
       setIsaptosAgentReady(true);
     };
+    const initHyperion = async() => {
+      hyperionsdk = initHyperionSDK({network: Network.MAINNET})
+    }
+    setIshyperionsdkReady(true)
     initMerkle();
     initAptosAgent();
+    initHyperion();
   }, []);
 
   return (
     <div className="w-full max-w-7xl p-10">
       <div className="flex flex-row gap-10">
         <div className="flex-1">
-          <Portfolio isClientReady={isClientReady} isaptosAgentReady={isaptosAgentReady}/>
+          <Portfolio isClientReady={isClientReady} isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
         <div className="flex-1">
-          <TradeUI isClientReady={isClientReady} isaptosAgentReady={isaptosAgentReady}/>
+          <TradeUI isClientReady={isClientReady} isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
       </div>
     </div>

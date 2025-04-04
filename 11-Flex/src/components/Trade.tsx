@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 
 
 interface TradeUIProps {
-  isClientReady: boolean; isaptosAgentReady: boolean; 
+  isClientReady: boolean; isaptosAgentReady: boolean; ishyperionsdkReady: boolean
 }
 
 /**
@@ -30,7 +30,7 @@ interface TradeUIProps {
  * 2. 管理交易状态和用户输入
  * 3. 执行交易操作
  */
-export function TradeUI({ isClientReady, isaptosAgentReady }: TradeUIProps) {
+export function TradeUI({ isClientReady, isaptosAgentReady, ishyperionsdkReady}: TradeUIProps) {
   // 控制展开的卡片
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const queryClient = useQueryClient();

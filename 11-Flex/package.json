@@ -35,6 +35,7 @@
     "@radix-ui/react-tabs": "^1.1.3",
     "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/react-query": "^5.51.23",
+    "@uniswap/sdk-core": "^7.7.2",
     "@web3icons/react": "^4.0.8",
     "ai": "^4.1.44",
     "class-variance-authority": "^0.7.0",

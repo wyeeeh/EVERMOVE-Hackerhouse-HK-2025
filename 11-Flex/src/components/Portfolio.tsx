@@ -29,9 +29,9 @@ interface Asset {
   pnl: number;
 }
 
-interface PortfolioProps { isClientReady: boolean; isaptosAgentReady: boolean; }
+interface PortfolioProps { isClientReady: boolean; isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
 
-export function Portfolio({ isClientReady, isaptosAgentReady }: PortfolioProps) {
+export function Portfolio({ isClientReady, isaptosAgentReady, ishyperionsdkReady}: PortfolioProps) {
   
   // 将symbol转换为AntDesign组件名称的映射函数
   const getIconComponentName = (symbol: string): string => {
