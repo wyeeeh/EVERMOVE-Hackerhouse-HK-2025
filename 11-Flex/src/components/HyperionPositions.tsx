@@ -36,10 +36,12 @@ async function getUsdcMetadata() {
     }
 }
 
-// async function getexample() {
-//     const poolItems = await sdk.Pool.fetchAllPools();
-//     console.log(poolItems)
-// }
+async function getUSDCpool() {
+    const pool = await sdk.Pool.fetchPoolById({
+      poolId: "0x925660b8618394809f89f8002e2926600c775221f43bf1919782b297a79400d8"
+    })
+    console.log(pool)
+}
   
 
 export function HyperionPositions({ isaptosAgentReady }: AgentUIProps) {
@@ -49,7 +51,7 @@ export function HyperionPositions({ isaptosAgentReady }: AgentUIProps) {
             try {
                 await getAptMetadata();
                 await getUsdcMetadata();
-                //await getexample();
+                await getUSDCpool();
             } catch (error) {
                 console.error(error);
             }

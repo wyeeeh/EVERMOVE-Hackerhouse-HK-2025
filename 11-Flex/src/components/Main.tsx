@@ -8,8 +8,8 @@ import { MerkleTokenPair } from "@/components/MerkleTokenPair";
 
 import { useWallet, WalletContextState} from "@aptos-labs/wallet-adapter-react";
 import { Aptos, AptosConfig, Network, Account, AccountAddress} from "@aptos-labs/ts-sdk"
-
-//import { initHyperionSDK } from "@hyperfluid/sdk"
+// @ts-ignore
+import { initHyperionSDK } from '@hyperionxyz/sdk'
 
 // 全局共享的 Merkle 客户端实例
 export let merkle: MerkleClient;
@@ -17,8 +17,7 @@ export let merkle: MerkleClient;
 export let aptos: Aptos;
 export const priceFeedMap: Map<string, PriceFeed> = new Map();
 export let wallet:  WalletContextState;
-//export const cetusClmmSDK = initHyperfluidSDK({network: Network.MAINNET})
-//export const sdk = initHyperionSDK({network: Network.MAINNET})
+export const sdk = initHyperionSDK({network: Network.MAINNET})
 
 // Export 前6个交易对
 export const tokenList = MerkleTokenPair.slice(0, 6);
@@ -33,7 +32,6 @@ export function Platform() {
   const [isClientReady, setIsClientReady] = useState<boolean>(false);
   const [isaptosAgentReady, setIsaptosAgentReady] = useState<boolean>(false);
   
-  const account = Account.generate(); //the account is useless, so create a random account for the argument
   wallet = useWallet();
       
   // 初始化Merkle客户端
