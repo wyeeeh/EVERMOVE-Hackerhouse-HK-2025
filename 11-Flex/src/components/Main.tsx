@@ -30,7 +30,7 @@ export function Platform() {
   wallet = useWallet();
 
   const [apy, setApy] = useState(21.3);
-  const [riskLimit, setRiskLimit] = useState("Medium");      
+  const [riskLimit, setRiskLimit] = useState("medium");      
   const [isaptosAgentReady, setIsaptosAgentReady] = useState<boolean>(false);
   const [ishyperionsdkReady, setIshyperionsdkReady] = useState<boolean>(false);
 
@@ -53,12 +53,12 @@ export function Platform() {
 
 
   return (
-    <div className="mx-auto flex space-x-10">
-      <div id="Portfolio">
+    <div className="flex space-x-20 justify-center">
+      <div className="w-1/2" id="Portfolio">
         <NewPortfolio isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
 
-      <div className="flex-col space-y-10">
+      <div className="w-1/2 flex-col space-y-10" id="rightCol">
         <div id="UserPreference">
         <UserPreferenceSlider 
               apy={apy} 

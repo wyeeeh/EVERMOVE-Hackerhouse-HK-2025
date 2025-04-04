@@ -205,7 +205,7 @@ export function TradeUI({ isClientReady, isaptosAgentReady, ishyperionsdkReady}:
   }, []); // Empty dependency array means this runs once on component mount
 
   return (
-    <div className="relative group mt-4 ml-4">
+    <div className="relative group">
     {/* div外发光效果 */}
     <div className="glow-effect" />
     

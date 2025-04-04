@@ -21,8 +21,7 @@
 1. 克隆仓库：
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+cd 11-Flex/api
 ```
 
 2. 安装依赖：
