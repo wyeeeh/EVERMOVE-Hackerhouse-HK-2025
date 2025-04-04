@@ -30,8 +30,6 @@ export function CloseAll() {
                 }
             };
             //close Aries:
-            
-
         } catch (error) {
           console.error(error);
         }
