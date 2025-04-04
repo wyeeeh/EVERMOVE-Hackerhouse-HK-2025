@@ -2,13 +2,57 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PositionCard } from "@/components/PositionCard";
 import { Button } from "@/components/ui/button";
 import { Landmark, TrendingUp, WalletMinimal } from "lucide-react";
+
+// Positions
 import { JoulePositions } from "@/components/JoulePositions";
 import { HyperionPositions } from "@/components/HyperionPositions";
-import { PortfolioChart } from "@/components/PortfolioChart";
+
+
+import * as React from "react"
+
+// Chart components
+import { Label, Pie, PieChart } from "recharts"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+const chartData = [
+  { protocol: "joule", position: 275, fill: "var(--color-joule)" },
+  { protocol: "aries", position: 200, fill: "var(--color-aries)" },
+  { protocol: "hyperion", position: 287, fill: "var(--color-hyperion)" }
+]
+const chartConfig = {
+  position: {
+    label: "Total",
+  },
+  joule: {
+    label: "Joule",
+    color: "hsl(var(--chart-1))",
+  },
+  aries: {
+    label: "Aries",
+    color: "hsl(var(--chart-2))",
+  },
+  hyperion: {
+    label: "Hyperion",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig
+
 
 interface PortfolioProps { isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
 
 export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : PortfolioProps) {
+  const [activeChart, setActiveChart] =
+    React.useState<keyof typeof chartConfig>("position")
+
+  const totalPosition = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.position, 0)
+  }, [])
+
+
   const mockPositions = [
     { market: "Aries Market", asset: "USDC", position: "200K", apy: "8.89%", risk: "0.5" },
     { market: "Joule Finance", asset: "USDC", position: "10K", apy: "8.14%", risk: "1.5" },
@@ -28,13 +72,93 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
       </div>
 
       <div id="PortfolioChart">
-      <PortfolioChart />
+      <Card className="flex flex-col">
+      {/* <CardHeader className="items-center pb-0">
+        <CardTitle>Portfolio</CardTitle>
+        <CardDescription>Protocol Position</CardDescription>
+      </CardHeader> */}
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Pie
+              data={chartData}
+              dataKey="position"
+              nameKey="protocol"
+              innerRadius={60}
+              strokeWidth={5}
+            >
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          ${totalPosition.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground"
+                        >
+                          Total Value
+                        </tspan>
+                      </text>
+                    )
+                  }
+                }}
+              />
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+      </CardContent>
+      {/* <CardFooter className="flex-col gap-2 text-sm">
+        <div className="flex items-center gap-2 font-medium leading-none">
+          Position Distribution <TrendingUp className="h-4 w-4" />
+        </div>
+        <div className="leading-none text-muted-foreground">
+          Current positions across all protocols
+        </div>
+      </CardFooter> */}
+      <div className="flex">
+          {Object.keys(chartConfig).map((key) => {
+            const chart = key as keyof typeof chartConfig
+            return (
+              <button
+                key={chart}
+                data-active={activeChart === chart}
+                className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                onClick={() => setActiveChart(chart)}
+              >
+                <span className="text-xs text-muted-foreground">
+                  {chartConfig[chart].label}
+                </span>
+                <span className="text-lg font-bold leading-none sm:text-3xl">
+                  ${chart === "position" ? totalPosition.toLocaleString() : (chartData.find(item => item.protocol === chart)?.position || 0).toLocaleString()}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+    </Card>
       </div>
 
       <div className="space-y-2">
-        {mockPositions.map((position, index) => (
-          <PositionCard key={index} {...position} />
-        ))}
         <JoulePositions isaptosAgentReady={isaptosAgentReady}/>
         <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}/>
       </div>

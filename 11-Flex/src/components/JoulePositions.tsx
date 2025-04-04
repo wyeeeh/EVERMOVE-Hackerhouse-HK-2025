@@ -1,40 +1,27 @@
 "use client"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import * as AntIcons from '@ant-design/web3-icons';
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChevronUp, ChevronDown } from "lucide-react";
+
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 import {getWalletAddress} from "@/components/Main";
 import {getUserAllPositions, getBalance} from "@/utils/JouleUtil"
 
-interface AgentUIProps {
+// Token metadata
+import { coin_address, coin_type, coin_decimals } from "@/constants";
+
+interface JouleProps {
     isaptosAgentReady: boolean;
     onBalanceChange?: (balance: number) => void;
 }
 
-export function JoulePositions({ isaptosAgentReady, onBalanceChange }: AgentUIProps) {
+export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProps) {
     const [balance, setBalance] = useState(Number);
     const [userPositions, setUserPositions] = useState();
 
-    
-    //const TESTUSDT = "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::test_tokens::USDT"
-    const MAINUSDC = "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
-    const FAUSDC = "@bae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b"
-
-    const FAUSDT = "@357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b"
-    const MAINUSDT = "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b"
-
-    // 地址到代币名称的映射
-    const tokenAddressToName: { [key: string]: string } = {
-        [FAUSDC]: "Faucet-USDC",
-        [MAINUSDC]: "Mainnet-USDC",
-        [FAUSDT]: "Faucet-USDT",
-        [MAINUSDT]: "Mainnet-USDT"
-    }
-
-    // 将地址转换为可读的代币名称
-    const getTokenName = (address: string): string => {
-        return tokenAddressToName[address] || address
-    }
-    
-    //const TESTWETH = "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::test_tokens::WETH"
     
     useEffect(() => {
         if(!isaptosAgentReady) return
@@ -57,44 +44,140 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: AgentUIPr
         return () => clearInterval(intervalId);
     }, [isaptosAgentReady]);
 
+    const calculateActualAmount = (value: number, token: string): string => {
+        let decimals = 0; // 默认 decimals
+        
+        if (token === coin_type.APT) {
+            decimals = coin_decimals.APT;
+        } else if (token === coin_type.USDC) {
+            decimals = coin_decimals.USDC;
+        } else if (token === coin_type.USDT) {
+            decimals = coin_decimals.USDT;
+        }
+        
+        return (value / Math.pow(10, decimals)).toFixed(2);
+    };
+
+    const getTokenName = (address: string): string => {
+        switch (address) {
+            case coin_type.APT:
+                return "APT";
+            case coin_type.USDC:
+                return "USDC";
+            case coin_type.USDT:
+                return "USDT";
+            default:
+                return address;
+        }
+    };
+
+
+    // 将symbol转换为AntDesign组件名称的映射函数
+    const getIconComponentName = (symbol: string): string => {
+        if (symbol.toLowerCase() === 'eth') { 
+        return 'EthereumCircleColorful';
+        }
+        const capitalizedSymbol = symbol.charAt(0).toUpperCase() + symbol.slice(1).toLowerCase();
+        return `${capitalizedSymbol}CircleColorful`;
+    };
+
+    const [isExpanded, setIsExpanded] = useState(false);
+
     // Corrected return statement using shadcn UI card
     return (
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Position</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Coin</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead>Interest</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {userPositions?.[0]?.positions_map?.data?.map((position) => (
-                            <>
-                                {/* Lending Positions */}
-                                {position.value.lend_positions.data.map((lendPosition) => (
-                                    <TableRow key={`${position.key}-lend-${lendPosition.key}`}>
-                                        <TableCell>{position.value.position_name}</TableCell>
-                                        <TableCell>Lending</TableCell>
-                                        <TableCell>{getTokenName(lendPosition.key.replace("@","0x"))}</TableCell>
-                                        <TableCell>{lendPosition.value}</TableCell>
-                                        <TableCell>-</TableCell>
-                                    </TableRow>
-                                ))}
-                                {/* Borrowing Positions */}
-                                {position.value.borrow_positions.data.map((borrowPosition) => (
-                                    <TableRow key={`${position.key}-borrow-${borrowPosition.key}`}>
-                                        <TableCell>{position.value.position_name}</TableCell>
-                                        <TableCell>Borrowing</TableCell>
-                                        <TableCell>{getTokenName(borrowPosition.value.coin_name.replace("@","0x"))}</TableCell>
-                                        <TableCell>{borrowPosition.value.borrow_amount}</TableCell>
-                                        <TableCell>{borrowPosition.value.interest_accumulated}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </>
-                        ))}
-                    </TableBody>
-                </Table>
+        <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Joule Finance</CardTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown size={20} />
+            </motion.div>
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <AnimatePresence initial={false}>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              style={{ overflow: "hidden" }}
+            >
+              <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>Position</TableHead>
+                <TableHead>Coin</TableHead>
+                <TableHead>Lend</TableHead>
+                <TableHead>Borrow</TableHead>
+                <TableHead>APY</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            {userPositions?.[0]?.positions_map?.data?.map((position) => {
+                // 创建一个合并后的位置数据
+                const positionData = new Map();
+                
+                // 处理借出位置
+                position.value.lend_positions.data.forEach((lendPosition) => {
+                    const coinKey = lendPosition.key.replace("@","0x");
+                    positionData.set(coinKey, {
+                        position: position.value.position_name,
+                        coin: getTokenName(coinKey),
+                        lend: calculateActualAmount(lendPosition.value, coinKey),
+                        borrow: "0",
+                        apy: "-"
+                    });
+                });
+
+                // 处理借入位置
+                position.value.borrow_positions.data.forEach((borrowPosition) => {
+                    const coinKey = borrowPosition.value.coin_name.replace("@","0x");
+                    const existingData = positionData.get(coinKey) || {
+                        position: position.value.position_name,
+                        coin: getTokenName(coinKey),
+                        lend: "0",
+                        borrow: "0",
+                        apy: "0"
+                    };
+                    
+                    existingData.borrow = calculateActualAmount(borrowPosition.value.borrow_amount, coinKey);
+                    existingData.apy = calculateActualAmount(borrowPosition.value.interest_accumulated, coinKey);
+                    positionData.set(coinKey, existingData);
+                });
+
+                // 渲染合并后的数据
+                return Array.from(positionData.values()).map((data, index) => (
+                    <TableRow key={`${position.key}-${index}`}>
+                        <TableCell>{data.position}</TableCell>
+                        <TableCell>
+                        {(() => {
+                              const IconComponent = AntIcons[getIconComponentName(data.coin) as keyof typeof AntIcons];
+                              return IconComponent ? <IconComponent style={{ fontSize: '24px' }} /> : null;
+                            })()}
+                            {data.coin}</TableCell>
+                        <TableCell>{data.lend}</TableCell>
+                        <TableCell>{data.borrow}</TableCell>
+                        <TableCell>{data.apy}</TableCell>
+                    </TableRow>
+                ));
+            })}
+        </TableBody>
+    </Table>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
     );
 }
