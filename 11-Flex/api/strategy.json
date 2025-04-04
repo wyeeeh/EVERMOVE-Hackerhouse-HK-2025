@@ -1,0 +1,126 @@
+{
+  "14days": {
+    "expected_return": 21.3,
+    "risk_index": 85,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "50%",
+            "rationale": "高流动性且利息稳定"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "50%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.2,
+              "upper": 5.0
+            },
+            "rationale": "高潜在回报，适合短期激进策略"
+          }
+        ]
+      }
+    }
+  },
+  "30days": {
+    "expected_return": 21.3,
+    "risk_index": 75,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "40%",
+            "rationale": "稳健的收益来源"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "60%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.0,
+              "upper": 5.5
+            },
+            "rationale": "中短期配置，适应市场波动"
+          }
+        ]
+      }
+    }
+  },
+  "90days": {
+    "expected_return": 21.3,
+    "risk_index": 65,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "低风险投资选择"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "70%",
+            "fee_tier": 0.05,
+            "price_range": {
+              "lower": 4.0,
+              "upper": 6.0
+            },
+            "rationale": "宽松价格区间，降低无常损失"
+          }
+        ]
+      }
+    }
+  },
+  "180days": {
+    "expected_return": 21.3,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "保持资本稳定"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "80%",
+            "fee_tier": 0.01,
+            "price_range": {
+              "lower": 3.5,
+              "upper": 7.0
+            },
+            "rationale": "为长期增长提供机会"
+          }
+        ]
+      }
+    }
+  }
+}
