@@ -1,67 +1,179 @@
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface PlatformPosition {
+  asset: string;
+  action: string;
+  allocation: string;
+  rationale: string;
+  fee_tier?: number;
+  price_range?: {
+    lower: number;
+    upper: number;
+  };
+}
 
 interface TradeStrategy {
-  expected_return: number
-  risk_index: number
+  expected_return: number;
+  risk_index: number;
   platforms: {
     Joule?: {
-      positions: Array<{
-        asset: string
-        action: string
-        allocation: string
-        rationale: string
-      }>
-    }
+      positions: PlatformPosition[];
+    };
     Aries?: {
-      positions: Array<{
-        asset: string
-        action: string
-        allocation: string
-        rationale: string
-      }>
-    }
+      positions: PlatformPosition[];
+    };
     Hyperion?: {
-      positions: Array<{
-        asset: string
-        action: string
-        allocation: string
-        fee_tier?: number
-        price_range?: {
-          lower: number
-          upper: number
-        }
-        rationale: string
-      }>
-    }
-  }
+      positions: PlatformPosition[];
+    };
+  };
+}
+
+interface AllStrategies {
+  "14days"?: TradeStrategy;
+  "30days"?: TradeStrategy;
+  "90days"?: TradeStrategy;
+  "180days"?: TradeStrategy;
+  "14 Days"?: TradeStrategy;
+  "30 Days"?: TradeStrategy;
+  "90 Days"?: TradeStrategy;
+  "180 Days"?: TradeStrategy;
 }
 
 export function ExeuteTrade() {
-  const [amount, setAmount] = useState<string>("")
+  const [amount, setAmount] = useState<string>("");
+  const [strategies, setStrategies] = useState<AllStrategies>({});
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("14 Days");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  // 加载策略JSON文件
+  useEffect(() => {
+    const fetchStrategy = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/strategy.json");
+        if (!response.ok) {
+          throw new Error("无法加载策略文件");
+        }
+        const data: AllStrategies = await response.json();
+        setStrategies(data);
+        setError("");
+      } catch (err) {
+        console.error("加载策略文件失败:", err);
+        setError("加载策略文件失败");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStrategy();
+  }, []);
+
+  const getCurrentStrategy = (): TradeStrategy | null => {
+    // 尝试两种可能的键格式
+    const strategy =
+      strategies[selectedPeriod as keyof AllStrategies] ||
+      strategies[selectedPeriod.toLowerCase() as keyof AllStrategies];
+    return strategy || null;
+  };
 
   const handleExecute = async () => {
     if (!amount || isNaN(Number(amount))) {
-      console.error("请输入有效金额")
-      return
+      console.error("请输入有效金额");
+      return;
     }
     // TODO: 执行交易逻辑
-    console.log("执行交易，金额:", amount)
-  }
+    console.log("执行交易，金额:", amount, "策略:", selectedPeriod);
+  };
+
+  const currentStrategy = getCurrentStrategy();
 
   return (
-        <div className="flex items-center space-x-2">
-          <Input
-            type="number"
-            placeholder="输入金额 USDC"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <Button onClick={handleExecute}>
-            执行
-          </Button>
-        </div>
-  )
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>执行交易策略</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <p>加载策略中...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-col space-y-2">
+              <label>选择时间段</label>
+              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                <SelectTrigger>
+                  <SelectValue placeholder="选择时间段" />
+                </SelectTrigger>
+                <SelectContent>·
+                  <SelectItem value="14 Days">14天</SelectItem>
+                  <SelectItem value="30 Days">30天</SelectItem>
+                  <SelectItem value="90 Days">90天</SelectItem>
+                  <SelectItem value="180 Days">180天</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {currentStrategy && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-sm font-medium">预期收益:</p>
+                    <p>{currentStrategy.expected_return}%</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">风险指数:</p>
+                    <p>{currentStrategy.risk_index}/100</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">平台分配:</p>
+                  {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
+                    <div key={platform} className="mb-2">
+                      <p className="font-medium">{platform}</p>
+                      {data.positions.length > 0 ? (
+                        <ul className="pl-4">
+                          {data.positions.map((pos, idx) => (
+                            <li key={idx} className="text-sm">
+                              {pos.asset} ({pos.action}): {pos.allocation}
+                              {pos.price_range && (
+                                <span>
+                                  {" "}
+                                  - 价格区间: {pos.price_range.lower} - {pos.price_range.upper}
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm">无仓位分配</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center space-x-2 mt-4">
+              <Input
+                type="number"
+                placeholder="输入金额 USDC"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+              <Button onClick={handleExecute} disabled={!currentStrategy}>
+                执行
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 }
