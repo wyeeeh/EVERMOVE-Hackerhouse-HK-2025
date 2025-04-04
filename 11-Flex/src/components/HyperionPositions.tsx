@@ -122,19 +122,3 @@ export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
     </Card>
   );
 }
-
-const tableHeaderStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: "8px",
-  backgroundColor: "#f2f2f2",
-  textAlign: "left",
-};
-
-const tableRowStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-};
-
-const tableCellStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: "8px",
-};
