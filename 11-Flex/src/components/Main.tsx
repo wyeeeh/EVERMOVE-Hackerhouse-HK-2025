@@ -30,8 +30,10 @@ export function Platform() {
   wallet = useWallet();
 
   const [apy, setApy] = useState(21.3);
-  const [riskLimit, setRiskLimit] = useState("Medium");
-      
+  const [riskLimit, setRiskLimit] = useState("Medium");      
+  const [isaptosAgentReady, setIsaptosAgentReady] = useState<boolean>(false);
+  const [ishyperionsdkReady, setIshyperionsdkReady] = useState<boolean>(false);
+
   useEffect(() => {
     const initAptosAgent = async() => {
       const aptosConfig = new AptosConfig({
@@ -39,9 +41,11 @@ export function Platform() {
         fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
       });
       aptos = new Aptos(aptosConfig);
+      setIsaptosAgentReady(true);
     };
     const initHyperion = async() => {
       hyperionsdk = initHyperionSDK({network: Network.MAINNET})
+      setIshyperionsdkReady(true)
     }
     initAptosAgent();
     initHyperion();
@@ -51,7 +55,7 @@ export function Platform() {
   return (
     <div className="mx-auto flex space-x-10">
       <div id="Portfolio">
-        <NewPortfolio />
+        <NewPortfolio isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
 
       <div className="flex-col space-y-10">

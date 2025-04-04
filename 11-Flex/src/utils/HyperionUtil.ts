@@ -1,7 +1,6 @@
 import { Hyperion_getPostion, Hyperion_getpool } from "@/entry-functions/hyperion";
 // @ts-ignore
 import { tickToPrice } from "@hyperionxyz/sdk"
-import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { Hyperion_creatposition } from "@/entry-functions/hyperion";
 import { send_entry_tx } from "@/view-functions/Contract_interact";
 import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
@@ -18,7 +17,7 @@ export const poolid2string: Record<string, string> = {
     "0xd3894aca06d5f42b27c89e6f448114b3ed6a1ba07f992a58b2126c71dd83c127" : "USDT_USDC",
 }
 
-interface Position {
+export interface Position {
     pair: string;
     value: number;
     current_price: number;
@@ -29,7 +28,7 @@ interface Position {
 
 async function get_apy(id: string) : Promise<number> {
     const poolinfo = await Hyperion_getpool(id)
-    return poolinfo[0].farmAPR + poolinfo[0].feeAPR
+    return Number(poolinfo[0].farmAPR) + Number(poolinfo[0].feeAPR)
 }
 
 
@@ -56,24 +55,25 @@ async function price2tick(poolinfo: any, price: number) {
   return Math.round(tick);
 }
 
-export async function get_hyperion_positions() {
+export async function get_hyperion_positions() : Promise<Position[]>{
     const postions = await Hyperion_getPostion()
     const mypositions: Position[] = [];
     
-    postions.forEach(async (item: any) => {
+    await Promise.all(
+    postions.map(async (item: any) => {
         const id = item.position.poolId
         const poolinfo = await Hyperion_getpool(id)
-        console.log(item.position.pool.currentTick, item.position.tickUpper, item.position.tickLower)
+        //console.log(item.position.pool.currentTick, item.position.tickUpper, item.position.tickLower)
         await tick2price(poolinfo, item.position.pool.currentTick)
         mypositions.push({
           pair: poolid2string[id],
-          value: item.value,
+          value: Number(item.value),
           current_price: await tick2price(poolinfo, item.position.pool.currentTick),
             upper_price: await tick2price(poolinfo, item.position.tickUpper),
             lower_price: await tick2price(poolinfo, item.position.tickLower),
             estapy : await get_apy(item.position.poolId),
         });
-      });
+      }));
     console.log(mypositions)
     return mypositions
 }

@@ -1,8 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PositionCard } from "./PositionCard";
 import { Landmark, TrendingUp, WalletMinimal } from "lucide-react";
+import { JoulePositions } from "@/components/JoulePositions";
+import { HyperionPositions } from "@/components/HyperionPositions";
 
-export function NewPortfolio() {
+interface PortfolioProps { isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
+
+export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : PortfolioProps) {
   const mockPositions = [
     { market: "Aries Market", asset: "USDC", position: "200K", apy: "8.89%", risk: "0.5" },
     { market: "Joule Finance", asset: "USDC", position: "10K", apy: "8.14%", risk: "1.5" },
@@ -54,6 +58,8 @@ export function NewPortfolio() {
         {mockPositions.map((position, index) => (
           <PositionCard key={index} {...position} />
         ))}
+        <JoulePositions isaptosAgentReady={isaptosAgentReady}/>
+        <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}/>
       </div>
     </div>
     </div>
