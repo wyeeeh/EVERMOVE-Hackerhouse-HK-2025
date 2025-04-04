@@ -14,11 +14,12 @@ import { getUserAllPositions, getBalance } from "@/utils/JouleUtil";
 import { coin_address, coin_type, coin_decimals } from "@/constants";
 
 interface JouleProps {
-  isaptosAgentReady: boolean;
-  onBalanceChange?: (balance: number) => void;
-}
+    isaptosAgentReady: boolean;
+    onBalanceChange?: (balance: number) => void;
+    onTotalValueChange?: (value: number) => void;  // 添加新的回调
+  }
 
-export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProps) {
+  export function JoulePositions({ isaptosAgentReady, onBalanceChange, onTotalValueChange }: JouleProps) {
   const [balance, setBalance] = useState(Number);
   const [userPositions, setUserPositions] = useState();
 
@@ -29,6 +30,19 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
         //get now positions in joule
         const userPositions = await getUserAllPositions(getWalletAddress());
         setUserPositions(userPositions);
+
+        // 计算并传递 total value
+        const totalValue = userPositions?.[0]?.positions_map?.data?.reduce((total, position) => {
+            let positionTotal = 0;
+            position.value.lend_positions.data.forEach((lendPosition) => {
+              const token = getTokenName(lendPosition.key.replace("@", "0x"));
+              const amount = calculateActualAmount(lendPosition.value, lendPosition.key.replace("@", "0x"));
+              positionTotal += calculateTotalValue(amount, token);
+            });
+            return total + positionTotal;
+          }, 0) ?? 0;
+          
+          onTotalValueChange?.(totalValue);
 
         // Get Balance
         const accountBalance = await getBalance();
@@ -41,7 +55,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
     fetchData();
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [isaptosAgentReady]);
+  }, [isaptosAgentReady, onTotalValueChange]);
 
   const calculateActualAmount = (value: number, token: string): string => {
     let decimals = 0; // 默认 decimals
@@ -70,6 +84,16 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
     }
   };
 
+  const APT_PRICE = 4.7;  // 添加 APT 价格常量
+
+  const calculateTotalValue = (amount: string, token: string): number => {
+    const numAmount = parseFloat(amount);
+    if (token === "APT") {
+      return numAmount * APT_PRICE;
+    }
+    return numAmount; // USDC 和 USDT 价格为 1
+  };
+
   // 将symbol转换为AntDesign组件名称的映射函数
   const getIconComponentName = (symbol: string): string => {
     if (symbol.toLowerCase() === "eth") {
@@ -87,6 +111,18 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Joule Finance</CardTitle>
+          {/* Total Value */}
+          <div className="text-sm text-muted-foreground mt-1">
+              Total Value: ${userPositions?.[0]?.positions_map?.data?.reduce((total, position) => {
+                let positionTotal = 0;
+                position.value.lend_positions.data.forEach((lendPosition) => {
+                  const token = getTokenName(lendPosition.key.replace("@", "0x"));
+                  const amount = calculateActualAmount(lendPosition.value, lendPosition.key.replace("@", "0x"));
+                  positionTotal += calculateTotalValue(amount, token);
+                });
+                return total + positionTotal;
+              }, 0)?.toFixed(2) ?? "0.00"}
+            </div>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown size={20} />
@@ -111,7 +147,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
                     <TableHead>Coin</TableHead>
                     <TableHead>Lend</TableHead>
                     <TableHead>Borrow</TableHead>
-                    <TableHead>APY</TableHead>
+                    <TableHead>Net APY</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

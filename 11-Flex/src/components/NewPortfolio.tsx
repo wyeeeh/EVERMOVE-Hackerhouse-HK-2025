@@ -8,7 +8,7 @@ import { JoulePositions } from "@/components/JoulePositions";
 import { HyperionPositions } from "@/components/HyperionPositions";
 
 
-import * as React from "react"
+import React, { useEffect, useState } from "react"; // Import React to define JSX types
 
 // Chart components
 import { Label, Pie, PieChart } from "recharts"
@@ -18,33 +18,37 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { protocol: "joule", position: 275, fill: "var(--color-joule)" },
-  { protocol: "aries", position: 200, fill: "var(--color-aries)" },
-  { protocol: "hyperion", position: 287, fill: "var(--color-hyperion)" }
-]
-const chartConfig = {
-  position: {
-    label: "Total",
-  },
-  joule: {
-    label: "Joule",
-    color: "hsl(var(--chart-1))",
-  },
-  aries: {
-    label: "Aries",
-    color: "hsl(var(--chart-2))",
-  },
-  hyperion: {
-    label: "Hyperion",
-    color: "hsl(var(--chart-3))",
-  },
-} satisfies ChartConfig
+
 
 
 interface PortfolioProps { isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
 
 export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : PortfolioProps) {
+  const [totalValue, setTotalValue] = useState(0);
+
+  const chartData = [
+    { protocol: "joule", position: totalValue, fill: "var(--color-joule)" },
+    { protocol: "aries", position: 200, fill: "var(--color-aries)" },
+    { protocol: "hyperion", position: 287, fill: "var(--color-hyperion)" }
+  ]
+  const chartConfig = {
+    position: {
+      label: "Total",
+    },
+    joule: {
+      label: "Joule",
+      color: "hsl(var(--chart-1))",
+    },
+    aries: {
+      label: "Aries",
+      color: "hsl(var(--chart-2))",
+    },
+    hyperion: {
+      label: "Hyperion",
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig
+  
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("position")
 
@@ -52,11 +56,6 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
     return chartData.reduce((acc, curr) => acc + curr.position, 0)
   }, [])
 
-
-  const mockPositions = [
-    { market: "Aries Market", asset: "USDC", position: "200K", apy: "8.89%", risk: "0.5" },
-    { market: "Joule Finance", asset: "USDC", position: "10K", apy: "8.14%", risk: "1.5" },
-  ];
 
   return (
   <div className="relative group">
@@ -158,8 +157,11 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
     </Card>
       </div>
 
-      <div className="space-y-2">
-        <JoulePositions isaptosAgentReady={isaptosAgentReady}/>
+      <div className="space-y-6">
+        <JoulePositions 
+        isaptosAgentReady={isaptosAgentReady}
+        onTotalValueChange={setTotalValue}
+      />
         <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}/>
       </div>
     </div>
