@@ -16,7 +16,7 @@
       "Aries": {
         "positions": [
           {
-            "asset": "APT",
+            "asset": "USDC",
             "action": "lend",
             "allocation": "20%",
             "rationale": "利用APT的高潜力短期增长"

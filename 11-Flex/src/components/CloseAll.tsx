@@ -15,7 +15,7 @@ export function CloseAll() {
             for (const [index, borrowPosition] of nowpos?.value?.borrow_positions?.data.entries()) {
                 const amount = borrowPosition.value.borrow_amount;
                 console.log(borrowPosition.key, amount);
-                if(amount > 1000) {
+                if(amount > 2000) {
                     const coin = borrowPosition.key.replace("@", "0x")
                    await Joule_repayToken(amount, coin, "2", !coin.includes("aptos"))
                 }
@@ -23,7 +23,7 @@ export function CloseAll() {
             for (const [index, lendPosition] of nowpos?.value?.lend_positions?.data.entries()) {
                 const amount = lendPosition.value;
                 console.log(lendPosition.key, amount);
-                if(amount > 1000) {
+                if(amount > 2000) {
                     const shares = await Amount2Shares(amount-1000, lendPosition.key)       
                     const coin = lendPosition.key.replace("@", "0x")
                     await Joule_withdrawToken(shares, coin, "2", !coin.includes("aptos"))

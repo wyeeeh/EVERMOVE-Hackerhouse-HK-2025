@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { create_hyperion_positions } from "@/utils/HyperionUtil"
 
 interface PlatformPosition {
   asset: string;
@@ -141,14 +142,17 @@ export function ExeuteTrade() {
         console.log(pos1, amount1);
         await Joule_lendToken(amount1 , coin_address_map[pos1.asset], '2', false, coin_is_fungible[pos1.asset])
         //Borrow Joule: 
-        await Joule_borrowToken(amount1 / aptprice * 0.7, coin_address_map["APT"], "2", true)
+        await Joule_borrowToken(Number(Math.floor(amount1 / aptprice * 0.7 * 100)), coin_address_map["APT"], "2", false)
         //Lend Aries:
         const pos2 = strategy.platforms?.Aries?.positions[0]!;
         const amount2 = allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
         console.log(pos2, amount2);
         await Aries_lendToken(amount2, pos2.asset)
         //Borrow Aries:
-        await Aries_borrowToken(amount2 / aptprice * 0.7, "APT")
+        await Aries_borrowToken(Number(Math.floor(amount2 / aptprice * 0.7 * 100)), "APT")
+        //Create Hyperion:
+        //const amount3 = allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
+        //await create_hyperion_positions()
     } catch (error) {
       console.error("执行交易失败:", error);
       alert(`交易执行失败: ${error}`);

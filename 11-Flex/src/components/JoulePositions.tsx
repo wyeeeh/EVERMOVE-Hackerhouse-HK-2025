@@ -68,7 +68,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValu
       decimals = coin_decimals.USDT;
     }
 
-    return (value / Math.pow(10, decimals)).toFixed(2);
+    return (value / Math.pow(10, decimals)).toFixed(4);
   };
 
   const getTokenName = (address: string): string => {
@@ -115,7 +115,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValu
           const token = getTokenName(lendPosition.key.replace("@", "0x"));
           const amount = calculateActualAmount(lendPosition.value, lendPosition.key.replace("@", "0x"));
           return total + calculateTotalValue(amount, token);
-          }, 0)?.toFixed(2) ?? "0.00"}
+          }, 0)?.toFixed(4) ?? "0.0000"}
             </CardDescription>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>

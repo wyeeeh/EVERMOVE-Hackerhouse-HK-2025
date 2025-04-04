@@ -55,7 +55,7 @@ export function AriesPositions({ isaptosAgentReady , onTotalValueChange}: AgentU
             <div className="flex items-center justify-between">
               <CardTitle>Aries</CardTitle>
               <CardDescription>
-              Total Value: ${positions.reduce((total, position) => total + position.lend, 0).toFixed(2)}
+              Total Value: ${positions.reduce((total, position) => total + position.lend, 0).toFixed(4)}
             </CardDescription>
           
               <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
@@ -102,8 +102,8 @@ export function AriesPositions({ isaptosAgentReady , onTotalValueChange}: AgentU
                                 {position.coin}
                               </div>
                             </TableCell>
-                            <TableCell>${position.lend.toFixed(2)}</TableCell>
-                            <TableCell>${position.borrow.toFixed(2)}</TableCell>
+                            <TableCell>${position.lend.toFixed(4)}</TableCell>
+                            <TableCell>${position.borrow.toFixed(4)}</TableCell>
                           </TableRow>
                         ))
                       )}
