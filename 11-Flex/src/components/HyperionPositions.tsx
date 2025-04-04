@@ -65,7 +65,7 @@ export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Aries Market</CardTitle>
+          <CardTitle>Hyperion</CardTitle>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown size={20} />

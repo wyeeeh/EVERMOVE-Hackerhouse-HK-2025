@@ -43,12 +43,12 @@ export function StrategyCard({ name, apy, risk, onAmountChange }: StrategyCardPr
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between">
-          <div className="flex gap-2">
+          <div className="flex">
             <span>Est. APY:</span>
             <span className="text-green-500">{apy}</span>
           </div>
-          <div className="flex gap-2">
-            <span>Risk Factor:</span>
+          <div className="flex">
+            <span>Risk:</span>
             <span className="text-green-500">{risk}%</span>
           </div>
         </div>

@@ -53,7 +53,7 @@ export function Platform() {
 
 
   return (
-    <div className="flex space-x-16 justify-center">
+    <div className="flex space-x-10 justify-center">
       <div className="w-1/2" id="Portfolio">
         <NewPortfolio isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
