@@ -4,15 +4,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import * as AntIcons from "@ant-design/web3-icons";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 import { get_hyperion_positions, Position } from "@/utils/HyperionUtil";
 interface HyperionProps {
   ishyperionsdkReady: boolean;
+  onTotalValueChange?: (value: number) => void;  // 添加回调属性
 }
 
-export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
+export function HyperionPositions({ ishyperionsdkReady, onTotalValueChange }: HyperionProps) {
   const [positions, setPositions] = useState<Position[]>([]);
   useEffect(() => {
     if (!ishyperionsdkReady) return;
@@ -21,6 +22,10 @@ export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
         const data = await get_hyperion_positions();
         setPositions(data);
         console.log(data);
+
+        // 计算并传递总价值
+        const totalValue = data.reduce((total, position) => total + position.value, 0);
+        onTotalValueChange?.(totalValue);
       } catch (error) {
         console.error(error);
       }
@@ -28,7 +33,7 @@ export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
     fetchData();
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [ishyperionsdkReady]);
+  }, [ishyperionsdkReady, onTotalValueChange]);
 
   console.log("Positions:", positions);
 
@@ -66,6 +71,9 @@ export function HyperionPositions({ ishyperionsdkReady }: HyperionProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Hyperion</CardTitle>
+          <CardDescription>
+              Total Value: ${positions.reduce((total, position) => total + position.value, 0).toFixed(2)}
+            </CardDescription>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown size={20} />

@@ -67,6 +67,7 @@ python api.py
 - `GET /` - 服务信息
 - `POST /generate-portfolio` - 生成投资组合建议
   - 参数：
+    - `apy` (float): 预期年利率
     - `risk_preference` (string): 风险偏好("low", "medium", "high")
     - `custom_prompt` (string, 可选): 用户自定义提示
 
