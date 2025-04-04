@@ -1,10 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ChevronDown, ChevronUp, ChartCandlestick } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 
+
+
+import { useState } from "react";
+ 
 interface UserPreferenceSliderProps {
   apy: number;
   riskLimit: string; // 改为 string 类型
@@ -14,6 +20,25 @@ interface UserPreferenceSliderProps {
 
 export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange }: UserPreferenceSliderProps) {
   const { toast } = useToast();
+
+  // Progress bar
+  const [progress, setProgress] = useState(0);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const startAnalyzing = () => {
+    setIsAnalyzing(true);
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsAnalyzing(false);
+          return 100;
+        }
+        return prev + (100 / 80);  // 80秒完成
+      });
+    }, 1000);  // 每秒更新
+  };
 
   const handleApyChange = (value: number) => {
     if (value > 30 && (riskLimit === "lowest" || riskLimit === "low")) {
@@ -45,13 +70,12 @@ export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange
   };
 
   return (
-    <div className="relative group mt-4 ml-4">
+    <div className="relative group">
       {/* div外发光效果 */}
       <div className="glow-effect" />
 
       {/* 主容器：上下左右边距、弹性布局、圆角、半透明背景、最大宽高限制、滚动条、边框 */}
-      <div className="relative flex flex-col gap-4 p-4 md:p-8 rounded-lg bg-card w-full max-w-[600px] overflow-auto border">
-        {/* <div className="mt-4 mr-4 flex flex-col gap-4 p-4 md:p-8 rounded-lg bg-card w-full max-w-[600px] border-2 border-white/50"> */}
+      <div className="relative flex flex-col gap-4 p-8 rounded-lg bg-card overflow-auto border">
         {/* 标题栏：两端对齐布局 */}
         <div className="flex items-center justify-between space-y-0 pb-2">
           <span className="text-2xl font-bold">Preferences</span>
@@ -100,7 +124,20 @@ export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange
             </div>
           </CardContent>
         </Card>
+        <Button 
+          onClick={startAnalyzing}
+          disabled={isAnalyzing}
+        > 
+          {isAnalyzing ? "Analyzing..." : "Start Analyzing"}
+        </Button>
+        {isAnalyzing && (
+          <div className="mt-4">
+            <Progress value={progress} className="h-2" />
+          </div>
+        )}
+
       </div>
     </div>
+        
   );
 }
