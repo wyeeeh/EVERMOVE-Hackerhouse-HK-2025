@@ -53,7 +53,7 @@ export function Platform() {
 
 
   return (
-    <div className="flex space-x-20 justify-center">
+    <div className="flex space-x-16 justify-center">
       <div className="w-1/2" id="Portfolio">
         <NewPortfolio isaptosAgentReady={isaptosAgentReady} ishyperionsdkReady={ishyperionsdkReady}/>
         </div>
@@ -71,7 +71,6 @@ export function Platform() {
         <div id="Strategy">
         <Strategy />
         </div>
-
       </div>
 
     </div>
