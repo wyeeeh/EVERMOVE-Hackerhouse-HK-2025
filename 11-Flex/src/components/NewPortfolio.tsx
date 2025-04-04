@@ -3,7 +3,8 @@ import { PositionCard } from "./PositionCard";
 import { Landmark, TrendingUp, WalletMinimal } from "lucide-react";
 import { JoulePositions } from "@/components/JoulePositions";
 import { HyperionPositions } from "@/components/HyperionPositions";
-
+import {AriesPositions} from "@/components/AriesPositions"
+import { AriesAction } from "./AriesAction";
 interface PortfolioProps { isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
 
 export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : PortfolioProps) {
@@ -60,7 +61,11 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
         ))}
         <JoulePositions isaptosAgentReady={isaptosAgentReady}/>
         <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}/>
+        <AriesPositions isaptosAgentReady={isaptosAgentReady}/>
       </div>
+      <div className="space-y-2">
+            <AriesAction isaptosAgentReady={isaptosAgentReady} />
+            </div>
     </div>
     </div>
   );
