@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect} from "react";
 
 // Aptos
 import { useWallet, WalletContextState} from "@aptos-labs/wallet-adapter-react";
@@ -31,6 +31,22 @@ export function Platform() {
 
   const [apy, setApy] = useState(21.3);
   const [riskLimit, setRiskLimit] = useState("Medium");
+      
+  useEffect(() => {
+    const initAptosAgent = async() => {
+      const aptosConfig = new AptosConfig({
+        network: Network.MAINNET,
+        fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+      });
+      aptos = new Aptos(aptosConfig);
+    };
+    const initHyperion = async() => {
+      hyperionsdk = initHyperionSDK({network: Network.MAINNET})
+    }
+    initAptosAgent();
+    initHyperion();
+  }, []);
+
 
   return (
     <div className="mx-auto flex space-x-10">
