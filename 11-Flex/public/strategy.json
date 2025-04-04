@@ -1,0 +1,166 @@
+{
+  "14days": {
+    "expected_return": 21.3,
+    "risk_index": 85,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "60%",
+            "rationale": "选择高APR和稳定的流动性"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "利用相对较高利率的借贷服务"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "10%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 5.0,
+              "upper": 6.5
+            },
+            "rationale": "提供流动性以获取交易费，价格区间符合市场预期"
+          }
+        ]
+      }
+    }
+  },
+  "30days": {
+    "expected_return": 21.3,
+    "risk_index": 75,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "50%",
+            "rationale": "稳定收益，风险适中"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "选择高APR产品增强收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "20%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.5,
+              "upper": 7.0
+            },
+            "rationale": "激活市场流动性，使用适度风险的价格区间"
+          }
+        ]
+      }
+    }
+  },
+  "90days": {
+    "expected_return": 21.3,
+    "risk_index": 65,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "40%",
+            "rationale": "确保流动性和稳定收益"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "利用低风险的资产获取收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "30%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.0,
+              "upper": 8.0
+            },
+            "rationale": "考虑到长期趋势，设置更宽的价格区间"
+          }
+        ]
+      }
+    }
+  },
+  "180days": {
+    "expected_return": 21.3,
+    "risk_index": 50,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "风险低且流动性强的选择"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "30%",
+            "rationale": "稳定收益产品，风险相对较低"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDT",
+            "action": "add_liquidity",
+            "allocation": "40%",
+            "fee_tier": 0.05,
+            "price_range": {
+              "lower": 3.5,
+              "upper": 10.0
+            },
+            "rationale": "长期投资，适当分散风险设置更宽价格区间"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PositionCard } from "@/components/PositionCard";
 import { Button } from "@/components/ui/button";
 import { Landmark, TrendingUp, WalletMinimal } from "lucide-react";
 
@@ -40,11 +39,11 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
       label: "Total",
     },
     joule: {
-      label: "Joule",
+      label: "Joule Finance",
       color: "hsl(var(--chart-1))",
     },
     aries: {
-      label: "Aries",
+      label: "Aries Finance",
       color: "hsl(var(--chart-2))",
     },
     hyperion: {
@@ -57,7 +56,7 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
     React.useState<keyof typeof chartConfig>("position")
 
   const totalPosition = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.position, 0)
+    return chartData.reduce((acc, curr) => acc + curr.position, 0).toFixed(2)
   }, [chartData])
 
 
@@ -145,14 +144,14 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="flex flex-1 flex-col justify-center text-center gap-1 even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="text-xs text-muted-foreground">
                   {chartConfig[chart].label}
                 </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
-                  ${chart === "position" ? totalPosition.toLocaleString() : (chartData.find(item => item.protocol === chart)?.position || 0).toLocaleString()}
+                  ${chart === "position" ? totalPosition.toLocaleString() : (chartData.find(item => item.protocol === chart)?.position || 0).toFixed(2).toLocaleString()}
                 </span>
               </button>
             )
