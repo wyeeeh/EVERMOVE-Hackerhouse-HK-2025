@@ -81,7 +81,7 @@ export function JoulePositions({ isaptosAgentReady, onBalanceChange }: JouleProp
         return `${capitalizedSymbol}CircleColorful`;
     };
 
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
 
     // Corrected return statement using shadcn UI card
     return (
