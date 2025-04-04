@@ -12,6 +12,7 @@ import { initHyperionSDK } from '@hyperionxyz/sdk'
 import { NewPortfolio } from "@/components/NewPortfolio";
 import { UserPreferenceSlider } from "@/components/UserPreference";
 import { Strategy } from "@/components/Strategy";
+import { ExeuteTrade } from "@/components/ExecuteTrade";
 
 
 export let aptos: Aptos;
@@ -70,6 +71,11 @@ export function Platform() {
 
         <div id="Strategy">
         <Strategy />
+        </div>
+
+
+        <div id="ExeuteTrade">
+        <ExeuteTrade />
         </div>
       </div>
 
