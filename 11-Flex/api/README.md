@@ -28,10 +28,20 @@ cd <repository-directory>
 2. 安装依赖：
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt  # Install the package
+pip install -U crawl4ai
+
+# For pre release versions
+pip install crawl4ai --pre
+
+# Run post-installation setup
+crawl4ai-setup
+
+# Verify your installation
+crawl4ai-doctor
 ```
 
-3. 创建`.env`文件并添加 OpenAI API 密钥：
+1. 创建`.env`文件并添加 OpenAI API 密钥：
 
 ```
 OPENAI_API_KEY=your_api_key_here
