@@ -77,7 +77,8 @@ export function ExeuteTrade() {
         }
         const data: AllStrategies = await response.json();
         setStrategies(data);
-        setcurrentStrategy(getCurrentStrategy())
+        const strategy = getCurrentStrategy()
+        setcurrentStrategy(strategy); 
         
         setError("");
       } catch (err) {
@@ -87,8 +88,9 @@ export function ExeuteTrade() {
         setIsLoading(false);
       }
     };
-
     fetchStrategy();
+    const intervalId = setInterval(fetchStrategy, 10000);
+    return () => clearInterval(intervalId);
   }, []);
 
 

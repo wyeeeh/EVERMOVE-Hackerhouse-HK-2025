@@ -18,9 +18,9 @@ export const coin_address_map: Record<string, string>  = {
 } as const;
 
 export const coin_is_fungible: Record<string, boolean>  = {
-    "APT": true,
-    "USDC": false,
-    "USDT": false,
+    "APT": false,
+    "USDC": true,
+    "USDT": true,
 } as const;
 
 
