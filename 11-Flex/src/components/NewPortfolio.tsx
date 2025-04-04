@@ -26,12 +26,13 @@ import {
 interface PortfolioProps { isaptosAgentReady: boolean; ishyperionsdkReady: boolean }
 
 export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : PortfolioProps) {
-  const [totalValue, setTotalValue] = useState(0);
+  const [jouleValue, setjouleValue] = useState(0);
+  const [hyperionValue, setHyperionValue] = useState(0);
 
   const chartData = [
-    { protocol: "joule", position: totalValue, fill: "var(--color-joule)" },
-    { protocol: "aries", position: 200, fill: "var(--color-aries)" },
-    { protocol: "hyperion", position: 287, fill: "var(--color-hyperion)" }
+    { protocol: "joule", position: jouleValue, fill: "var(--color-joule)" },
+    { protocol: "aries", position: 12, fill: "var(--color-aries)" },
+    { protocol: "hyperion", position: hyperionValue, fill: "var(--color-hyperion)" }
   ]
   const chartConfig = {
     position: {
@@ -162,9 +163,10 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
       <div className="space-y-6">
         <JoulePositions 
         isaptosAgentReady={isaptosAgentReady}
-        onTotalValueChange={setTotalValue}
+        onjouleValueChange={setjouleValue}
       />
-        <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}/>
+        <HyperionPositions ishyperionsdkReady={ishyperionsdkReady}
+        onTotalValueChange={setHyperionValue}/>
         <AriesPositions isaptosAgentReady={isaptosAgentReady}/>
       </div>
       <div className="space-y-2">

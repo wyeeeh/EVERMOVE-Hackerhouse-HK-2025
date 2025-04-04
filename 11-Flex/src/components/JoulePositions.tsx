@@ -3,7 +3,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import * as AntIcons from "@ant-design/web3-icons";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
@@ -16,10 +16,10 @@ import { coin_address, coin_type, coin_decimals } from "@/constants";
 interface JouleProps {
     isaptosAgentReady: boolean;
     onBalanceChange?: (balance: number) => void;
-    onTotalValueChange?: (value: number) => void;  // 添加新的回调
+    onjouleValueChange?: (value: number) => void;  // 添加新的回调
   }
 
-  export function JoulePositions({ isaptosAgentReady, onBalanceChange, onTotalValueChange }: JouleProps) {
+  export function JoulePositions({ isaptosAgentReady, onBalanceChange, onjouleValueChange }: JouleProps) {
   const [balance, setBalance] = useState(Number);
   const [userPositions, setUserPositions] = useState();
 
@@ -42,7 +42,7 @@ interface JouleProps {
             return total + positionTotal;
           }, 0) ?? 0;
           
-          onTotalValueChange?.(totalValue);
+          onjouleValueChange?.(totalValue);
 
         // Get Balance
         const accountBalance = await getBalance();
@@ -55,7 +55,7 @@ interface JouleProps {
     fetchData();
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [isaptosAgentReady, onTotalValueChange]);
+  }, [isaptosAgentReady, onjouleValueChange]);
 
   const calculateActualAmount = (value: number, token: string): string => {
     let decimals = 0; // 默认 decimals
@@ -112,7 +112,7 @@ interface JouleProps {
         <div className="flex items-center justify-between">
           <CardTitle>Joule Finance</CardTitle>
           {/* Total Value */}
-          <div className="text-sm text-muted-foreground mt-1">
+          <CardDescription>
               Total Value: ${userPositions?.[0]?.positions_map?.data?.reduce((total, position) => {
                 let positionTotal = 0;
                 position.value.lend_positions.data.forEach((lendPosition) => {
@@ -122,7 +122,7 @@ interface JouleProps {
                 });
                 return total + positionTotal;
               }, 0)?.toFixed(2) ?? "0.00"}
-            </div>
+            </CardDescription>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronDown size={20} />
