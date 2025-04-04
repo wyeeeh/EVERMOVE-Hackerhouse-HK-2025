@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import uvicorn
 from typing import Optional, Dict, Any
+from fastapi.middleware.cors import CORSMiddleware
 
 from multi_agent_system import run_investment_advisor
 
@@ -10,6 +11,15 @@ app = FastAPI(
     title="DeFi投资顾问API",
     description="一个基于多代理架构的DeFi投资组合生成系统，提供多时间段(14/30/90/180天)投资策略",
     version="0.1.0",
+)
+
+# 添加CORS中间件，允许跨域请求
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有来源，生产环境中应限制为特定域名
+    allow_credentials=True,
+    allow_methods=["*"],  # 允许所有HTTP方法
+    allow_headers=["*"],  # 允许所有请求头
 )
 
 
