@@ -25,19 +25,51 @@ export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange
   const [progress, setProgress] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const startAnalyzing = () => {
+  const startAnalyzing = async () => {
     setIsAnalyzing(true);
     setProgress(0);
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsAnalyzing(false);
-          return 100;
-        }
-        return prev + (100 / 80);  // 80秒完成
+
+    try {
+      // 发送数据到后端
+      const response = await fetch('http://localhost:8000/generate-portfolio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          risk_preference: riskLimit === "lowest" ? "low" : riskLimit,
+          custom_prompt: `我想关注APT生态系统的机会, 我希望APY是${apy}`,
+        }),
       });
-    }, 1000);  // 每秒更新
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const portfolioResult = await response.json();
+      console.log('Portfolio Analysis Result:', portfolioResult);
+
+      // 进度条动画
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsAnalyzing(false);
+            return 100;
+          }
+          return prev + (100 / 80);
+        });
+      }, 1000);
+
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Failed to get analysis results. Please try again.",
+      });
+      setIsAnalyzing(false);
+    }
   };
 
   const handleApyChange = (value: number) => {
