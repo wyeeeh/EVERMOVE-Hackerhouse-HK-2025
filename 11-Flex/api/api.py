@@ -65,7 +65,7 @@ async def generate_portfolio(request: InvestmentRequest):
         # 将结果保存为JSON文件
         # 获取当前文件所在目录
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "strategy.json")
+        file_path = os.path.join(current_dir, "../public/strategy.json")
 
         # 写入JSON文件
         with open(file_path, "w", encoding="utf-8") as f:
