@@ -1,15 +1,25 @@
 {
   "14 Days": {
-    "expected_return": 12.45,
-    "risk_index": 65,
+    "expected_return": 11.92,
+    "risk_index": 58,
     "platforms": {
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "50.23%",
+            "rationale": "高APY借贷收益"
+          }
+        ]
+      },
       "Joule": {
         "positions": [
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "31.35%",
-            "rationale": "Low risk stablecoin lending"
+            "allocation": "19.42%",
+            "rationale": "稳定币风险对冲"
           }
         ]
       },
@@ -18,29 +28,39 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "68.65%",
+            "allocation": "30.35%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.78,
-              "upper": 6.17
+              "lower": 4.8,
+              "upper": 6.1
             },
-            "rationale": "High APR short-term liquidity provision"
+            "rationale": "短期价格反弹机会"
           }
         ]
       }
     }
   },
   "30 Days": {
-    "expected_return": 10.87,
-    "risk_index": 55,
+    "expected_return": 18.74,
+    "risk_index": 52,
     "platforms": {
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "45.42%",
+            "rationale": "高收益低风险"
+          }
+        ]
+      },
       "Joule": {
         "positions": [
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "41.33%",
-            "rationale": "Stable yield with lower risk"
+            "allocation": "15.3%",
+            "rationale": "稳定收益基础"
           }
         ]
       },
@@ -49,29 +69,39 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "58.67%",
+            "allocation": "39.28%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.64,
-              "upper": 6.16
+              "lower": 4.6,
+              "upper": 6.3
             },
-            "rationale": "Balanced APT exposure with wider range"
+            "rationale": "中短期趋势布局"
           }
         ]
       }
     }
   },
   "90 Days": {
-    "expected_return": 9.32,
-    "risk_index": 45,
+    "expected_return": 34.16,
+    "risk_index": 47,
     "platforms": {
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "38.8%",
+            "rationale": "稳定收益核心"
+          }
+        ]
+      },
       "Joule": {
         "positions": [
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "48.67%",
-            "rationale": "Increased stable allocation for mid-term"
+            "allocation": "10.69%",
+            "rationale": "分散风险配置"
           }
         ]
       },
@@ -80,29 +110,39 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "51.33%",
+            "allocation": "50.51%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.77,
-              "upper": 6.16
+              "lower": 4.3,
+              "upper": 6.5
             },
-            "rationale": "Conservative liquidity position"
+            "rationale": "长期生态增长"
           }
         ]
       }
     }
   },
   "180 Days": {
-    "expected_return": 7.85,
-    "risk_index": 35,
+    "expected_return": 62.85,
+    "risk_index": 42,
     "platforms": {
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "32.56%",
+            "rationale": "基础收益保障"
+          }
+        ]
+      },
       "Joule": {
         "positions": [
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "56.3%",
-            "rationale": "Long-term capital preservation"
+            "allocation": "15.01%",
+            "rationale": "中期价格潜力"
           }
         ]
       },
@@ -111,13 +151,13 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "43.7%",
+            "allocation": "52.43%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.77,
-              "upper": 6.16
+              "lower": 4.0,
+              "upper": 7.0
             },
-            "rationale": "Minimal APT ecosystem exposure"
+            "rationale": "宽幅长期布局"
           }
         ]
       }

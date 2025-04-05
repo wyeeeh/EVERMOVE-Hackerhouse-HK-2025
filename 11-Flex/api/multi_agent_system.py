@@ -23,7 +23,7 @@ if not api_key:
 # 创建LLM实例
 llm = ChatOpenAI(model="gpt-4o-mini", base_url="https://xiaoai.plus/v1")
 
-llm_plus = ChatOpenAI(model="deepseek-v3", base_url="https://xiaoai.plus/v1")
+llm_plus = ChatOpenAI(model="deepseek-r1", base_url="https://xiaoai.plus/v1")
 
 
 # 定义系统状态
@@ -343,10 +343,9 @@ async def portfolio_manager(state: State):
     - 只需要添加流动性以及lend usdc 不需要其他操作
     - 请直接输出JSON，不要使用Markdown代码块或其他格式
     - 必须严格按照上述JSON格式输出
-    - 
-    - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%，"allocation"比例应该为两位小数，例如37.21，不要是整数。
-    - est APY 要实际计算，给出计算过程
-    - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币以及usdc-apt池子,usdt 
+    - est APY 要实际计算，给出计算过程,你需要计算每个仓位的APY然后加权平均 ，之后在按照时间计算实际预期return
+    - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币lend APY有%3额外bonus 以及usdc-apt池子 APY166%,usdt 
+    - 确保所有平台都有分配
     """
 
     # 调用LLM获取投资组合建议
