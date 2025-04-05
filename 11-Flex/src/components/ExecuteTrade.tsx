@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
 
 import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants";
@@ -63,6 +64,8 @@ export function ExeuteTrade() {
   const [error, setError] = useState<string>("");
   const [currentStrategy, setCurrentStrategy] = useState<TradeStrategy>();
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [platformAmounts, setPlatformAmounts] = useState<Record<string, number>>({});
+
 
   // 获取当前选择的策略
   const getCurrentStrategy = (): TradeStrategy => {
@@ -121,6 +124,18 @@ export function ExeuteTrade() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // 初始化 platformAmounts
+  useEffect(() => {
+    if (currentStrategy) {
+      const amounts = Object.entries(currentStrategy.platforms).reduce((acc, [platform, data]) => {
+        acc[platform] = data.positions.reduce((sum, pos) => sum + allocation_num(pos.allocation), 0);
+        return acc;
+      }, {} as Record<string, number>);
+      setPlatformAmounts(amounts);
+    }
+  }, [currentStrategy]);
+
+
   // 获取风险等级对应的颜色
   const getRiskColor = (riskIndex: number): string => {
     if (riskIndex < 40) return "[&>*]:bg-green-500";
@@ -170,6 +185,29 @@ export function ExeuteTrade() {
       setIsExecuting(false);
     }
   };
+
+  // 滑块处理比例函数
+const handleSliderChange = (platform: string, value: number) => {
+  const remainingPlatforms = Object.keys(platformAmounts).filter(p => p !== platform);
+  const remainingRatio = remainingPlatforms.reduce((acc, p) => acc + platformAmounts[p], 0);
+  
+  const ratios = remainingPlatforms.reduce((acc, p) => {
+    acc[p] = remainingRatio === 0 ? 1/remainingPlatforms.length : platformAmounts[p] / remainingRatio;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const remaining = 1 - value;
+  const updatedAmounts = {
+    ...platformAmounts,
+    [platform]: value,
+    ...remainingPlatforms.reduce((acc, p) => {
+      acc[p] = remaining * ratios[p];
+      return acc;
+    }, {} as Record<string, number>)
+  };
+
+  setPlatformAmounts(updatedAmounts);
+};
 
   return (
     <Card className="w-full shadow-lg border-t-4 border-t-blue-500">
@@ -262,7 +300,7 @@ export function ExeuteTrade() {
                       </CardTitle>
                     </CardHeader>
                       <CardContent>
-                      <div className="h-32 flex">
+                      <div className="h-24 flex">
                     <PortfolioBarChart
                       data={[{
                         term: selectedPeriod,
@@ -278,7 +316,8 @@ export function ExeuteTrade() {
                       }]}
                     />
                     </div>
-                    <div className="space-y-4">
+                    
+                    <div className="space-y-4" id="positionAllocationCard">
                       {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
                         <div key={platform} className="border-b pb-3 last:border-b-0 last:pb-0">
                           <div className="flex items-center mb-2">
@@ -308,6 +347,23 @@ export function ExeuteTrade() {
                           ) : (
                             <p className="text-sm text-slate-500">无仓位分配</p>
                           )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-4 mt-4">
+                      {Object.entries(platformAmounts).map(([platform, amount]) => (
+                        <div key={platform} className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="font-medium">{platform}</span>
+                            <span>{(amount * 100).toFixed(0)}%</span>
+                          </div>
+                          <Slider
+                            value={[amount * 100]}
+                            max={100}
+                            step={1}
+                            onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
+                          />
                         </div>
                       ))}
                     </div>
