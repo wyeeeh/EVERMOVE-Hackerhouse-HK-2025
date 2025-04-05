@@ -13,6 +13,7 @@ import { Aries_borrowToken, Aries_lendToken } from "@/utils/AriesUtil";
 import { getaptprice, create_hyperion_positions } from "@/utils/HyperionUtil";
 
 import { PortfolioBarChart } from "@/components/StackedBarChart";
+import { CloseAll } from "@/components/CloseAll";
 
 import { useState, useEffect } from "react";
 
@@ -246,14 +247,14 @@ export function ExeuteTrade() {
       <div className="relative flex flex-col gap-4 p-8 rounded-lg bg-card overflow-auto border">
         {/* 标题栏：两端对齐布局 */}
         <div className="flex items-center justify-between space-y-0 pb-2">
-          <div className="text-2xl font-bold">Trade</div>
+          <div className="text-2xl font-bold">Strategy</div>
           <ChartCandlestick />
         </div>
         {isLoading && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
-              <label className="text-base">Select Investment Terms</label>
+              <CardTitle className="text-xl">Select Terms</CardTitle>
               {lastUpdated && <span className="text-xs opacity-70">Last Updated: {lastUpdated}</span>}
             </div>
           </CardHeader>
@@ -408,7 +409,7 @@ export function ExeuteTrade() {
                   <p className="text-xs opacity-70">
                     *Executing trades will allocate your assets according to the selected strategy
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2" id="SubmitTrade">
                     <Input
                       type="number"
                       placeholder="100 USDC"
@@ -424,15 +425,17 @@ export function ExeuteTrade() {
                       {isExecuting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting...
+                          Execute Trades...
                         </>
                       ) : (
                         "Submit"
                       )}
                     </Button>
+
+                    <CloseAll/>
+                  </div>
                   </div>
                 </div>
-              </div>
             )}
           </CardContent>
         </Card>

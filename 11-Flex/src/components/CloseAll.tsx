@@ -69,9 +69,8 @@ export function CloseAll() {
     return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-            <span>Close All Position</span>
             <Button onClick={onClickButton}>
-                Execute
+                Close Position
             </Button>
             </div>  
         </div>

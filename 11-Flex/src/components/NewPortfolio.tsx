@@ -6,8 +6,6 @@ import { Landmark, TrendingUp, WalletMinimal } from "lucide-react";
 import { JoulePositions } from "@/components/JoulePositions";
 import { HyperionPositions } from "@/components/HyperionPositions";
 import {AriesPositions} from "@/components/AriesPositions"
-import { AriesAction } from "./AriesAction";
-import { CloseAll } from "./CloseAll";
 
 import React, { useEffect, useState } from "react"; // Import React to define JSX types
 
@@ -171,9 +169,7 @@ export function NewPortfolio({ isaptosAgentReady, ishyperionsdkReady} : Portfoli
         onhyperionValueChange={setHyperionValue}/>
       
       </div>
-      <div className="space-y-2">
-        <CloseAll/>
-       </div>
+
        
     </div>
     </div>
