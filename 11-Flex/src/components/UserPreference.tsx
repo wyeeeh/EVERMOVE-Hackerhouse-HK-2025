@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { ToastAction } from "@/components/ui/toast";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,53 +26,25 @@ export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange
   const [progress, setProgress] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const startAnalyzing = async () => {
+  const startAnalyzing = () => {
     setIsAnalyzing(true);
     setProgress(0);
-
-    try {
-      // 发送数据到后端
-      const response = await fetch('http://localhost:8000/generate-portfolio', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          risk_preference: riskLimit === "lowest" ? "low" : riskLimit,
-          custom_prompt: `我想关注APT生态系统的机会, 我希望APY是${apy}`,
-        }),
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsAnalyzing(false);
+          toast({
+            title: "Analysis completed!",
+            description: "Your strategy has been optimized.",
+            action: <ToastAction altText="Confirm">Confirm</ToastAction>,
+          });
+          return 100;
+        }
+        return prev + (100 / 600);
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const portfolioResult = await response.json();
-      console.log('Portfolio Analysis Result:', portfolioResult);
-
-      // 进度条动画
-      const interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsAnalyzing(false);
-            return 100;
-          }
-          return prev + (100 / 80);
-        });
-      }, 1000);
-
-    } catch (error) {
-      console.error('Analysis failed:', error);
-      toast({
-        variant: "destructive",
-        title: "Analysis Failed",
-        description: "Failed to get analysis results. Please try again.",
-      });
-      setIsAnalyzing(false);
-    }
+    }, 10);
   };
-
   const handleApyChange = (value: number) => {
     if (value > 30 && (riskLimit === "lowest" || riskLimit === "low")) {
       toast({
