@@ -5,6 +5,13 @@ import React, { useEffect, useState } from "react"; // Import React to define JS
 import { create_hyperion_positions } from "@/utils/HyperionUtil";
 import { Joule_repayToken, Joule_withdrawToken, getUserAllPositions, Amount2Shares} from "@/utils/JouleUtil";
 import { getWalletAddress } from "@/components/Main";
+import { getAllPostion, Aries_repayToken, Aries_withdrawToken, Aries_decimal } from "@/utils/AriesUtil";
+import { coin_decimals_map } from "@/constants";
+import { get_hyperion_positions } from "@/utils/HyperionUtil";
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export function CloseAll() {
     const onClickButton = async () => {
@@ -20,6 +27,7 @@ export function CloseAll() {
                    await Joule_repayToken(amount, coin, "2", !coin.includes("aptos"))
                 }
             };
+            await sleep(500)
             for (const [index, lendPosition] of nowpos?.value?.lend_positions?.data.entries()) {
                 const amount = lendPosition.value;
                 console.log(lendPosition.key, amount);
@@ -29,7 +37,33 @@ export function CloseAll() {
                     await Joule_withdrawToken(shares, coin, "2", !coin.includes("aptos"))
                 }
             };
+            await sleep(500)
             //close Aries:
+            const nowaries = await getAllPostion(getWalletAddress())
+            for (const [index, position] of nowaries.entries()) {
+                const { coin, lend, borrow } = position;
+                console.log(`Close position ${index}: ${coin}, lend: ${lend}, borrow: ${borrow}`);
+                if(borrow > 0.001) {
+                    const exeborrow = Math.floor(borrow*Math.pow(10,coin_decimals_map[coin]))
+                    await Aries_repayToken(exeborrow, coin)
+                }
+            };
+            await sleep(500)
+            for (const [index, position] of nowaries.entries()) {
+                const { coin, lend, borrow } = position;
+                console.log(`Close position ${index}: ${coin}, lend: ${lend}, borrow: ${borrow}`);
+                if(lend > 0.001) {
+                    const exelend = Math.floor(lend*Math.pow(10,coin_decimals_map[coin]))
+                    await Aries_withdrawToken(exelend, coin)
+                }
+            }
+            await sleep(500)
+            //close hyprion:
+            const nowhyper = await get_hyperion_positions();
+            for (const [index, position] of nowhyper.entries()) {
+                const { pair, value, current_price, upper_price, lower_price, estapy } = position;
+                console.log(`Close position ${index}: ${pair}, ${value}, ${current_price}`);
+            }
         } catch (error) {
           console.error(error);
         }

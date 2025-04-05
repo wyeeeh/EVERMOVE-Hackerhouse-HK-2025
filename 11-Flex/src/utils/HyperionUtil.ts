@@ -98,6 +98,25 @@ export async function create_hyperion_positions(amountapt: number, lowerprice: n
     await send_entry_tx(transaction)
 }
 
+// export async function close_hyperion_positions(amountapt: number, lowerprice: number, upperprice: number) {
+//     const poolinfo = await Hyperion_getpool(poolid.apt_usdc)
+//     const currencytick =  await get_current_tick(poolinfo)
+//     const lower = await price2tick(poolinfo, lowerprice)
+//     const upper = await price2tick(poolinfo, upperprice)
+//     console.log(lower, upper)
+//     //const lower = currencytick - 1000;
+//     //const upper = currencytick + 1000;
+//     const params = await Hyperion_creatposition(amountapt, currencytick, lower, upper)
+//     const transaction : InputTransactionData = {
+//             data:{
+//                 function: params.function,
+//                 functionArguments: params.functionArguments,
+//                 typeArguments: params.typeArguments
+//             }
+//         }
+//     await send_entry_tx(transaction)
+// }
+
 export async function getaptprice() {
     const aptpool = await Hyperion_getpool(poolid.apt_usdc)
     return await tick2price(aptpool, aptpool[0].pool.currentTick)

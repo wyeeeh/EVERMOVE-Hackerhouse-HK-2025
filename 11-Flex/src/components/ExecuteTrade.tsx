@@ -54,6 +54,12 @@ function allocation_num(x: string) {
   return parseFloat(x.replace("%", "")) / 100;
 }
 
+
+function sleep(ms: number): Promise<void> {
+  console.log(`Sleeping for ${ms} ms`); // 添加日志验证
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function ExeuteTrade() {
   const [amount, setAmount] = useState<string>("");
   const [strategies, setStrategies] = useState<AllStrategies>({});
@@ -145,18 +151,18 @@ export function ExeuteTrade() {
       const amount1 = Number(amount) * allocation_num(pos1?.allocation) * Math.pow(10, coin_decimals_map[pos1.asset]);
       await Joule_lendToken(amount1, coin_address_map[pos1.asset], "2", false, coin_is_fungible[pos1.asset]);
       //Borrow Joule:
-      await Joule_borrowToken(
-        Number(Math.floor((amount1 / aptprice) * 0.7 * 100)),
-        coin_address_map["APT"],
-        "2",
-        false,
-      );
+      await sleep(500)
+      await Joule_borrowToken(Number(Math.floor((amount1 / aptprice) * 0.7 * 100)),coin_address_map["APT"],"2", false,);
+      await sleep(1000)
       //Lend Aries:
       const pos2 = strategy.platforms?.Aries?.positions[0]!;
       const amount2 = Number(amount) * allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset]);
+      console.log("check", amount2, pos2.asset);
       await Aries_lendToken(amount2, pos2.asset);
+      await sleep(500)
       //Borrow Aries:
       await Aries_borrowToken(Number(Math.floor((amount2 / aptprice) * 0.7 * 100)), "APT");
+      await sleep(1000)
       //Create Hyperion:
       const pos3 = strategy.platforms?.Hyperion?.positions[0]!;
       let amount3 = Number(amount) * allocation_num(pos3?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset]);
