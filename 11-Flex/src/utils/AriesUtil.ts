@@ -60,7 +60,7 @@ export async function getAllPostion(userAddress: AccountAddress | string): Promi
     return mypositions
 }
 
-export async function Aries_lendToken(amount : number, token : string) {
+export async function Aries_lendToken(amount : bigint, token : string) {
     const transaction : InputTransactionData = {
             data:{
                 function: entry_addr.Aries_lend,
@@ -71,7 +71,7 @@ export async function Aries_lendToken(amount : number, token : string) {
     const signedTransaction = await send_entry_tx(transaction)
 }
 
-export async function Aries_borrowToken(amount : number, token : string) {
+export async function Aries_borrowToken(amount : bigint, token : string) {
     const transaction : InputTransactionData = {
             data:{
                 function: entry_addr.Aries_borrow,
@@ -82,7 +82,7 @@ export async function Aries_borrowToken(amount : number, token : string) {
     const signedTransaction = await send_entry_tx(transaction)
 }
 
-export async function Aries_withdrawToken(amount : number, token : string) {
+export async function Aries_withdrawToken(amount : bigint, token : string) {
     const transaction : InputTransactionData = {
             data:{
                 function: entry_addr.Aries_withdraw,
@@ -93,7 +93,7 @@ export async function Aries_withdrawToken(amount : number, token : string) {
     const signedTransaction = await send_entry_tx(transaction)
 }
 
-export async function Aries_repayToken(amount: number, token: string) {
+export async function Aries_repayToken(amount: bigint, token: string) {
     const transaction : InputTransactionData = {
         data:{
             function: entry_addr.Aries_repay,

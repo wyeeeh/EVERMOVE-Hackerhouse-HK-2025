@@ -20,7 +20,7 @@ export function AriesAction({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await Aries_lendToken(totallend * 1000000, "USDC")
+            await Aries_lendToken(BigInt(Math.floor(totallend * 1000000)), "USDC")
         } catch (error) {
           console.error(error);
         }
@@ -41,7 +41,7 @@ export function AriesAction({ isaptosAgentReady }: AgentUIProps) {
           return;
         }
         try {
-            await Aries_borrowToken(totalborrow * 100000000, "APT")
+            await Aries_borrowToken(BigInt(Math.floor(totalborrow * 100000000)), "APT")
         } catch (error) {
           console.error(error);
         }

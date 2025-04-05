@@ -4,6 +4,7 @@ import { tickToPrice } from "@hyperionxyz/sdk"
 import { Hyperion_creatposition } from "@/entry-functions/hyperion";
 import { send_entry_tx } from "@/view-functions/Contract_interact";
 import type { InputTransactionData } from "@aptos-labs/wallet-adapter-react"
+import { hyperionsdk , wallet} from "@/components/Main";
 import { log } from "console";
 
 export const poolid = {
@@ -98,24 +99,47 @@ export async function create_hyperion_positions(amountapt: number, lowerprice: n
     await send_entry_tx(transaction)
 }
 
-// export async function close_hyperion_positions(amountapt: number, lowerprice: number, upperprice: number) {
-//     const poolinfo = await Hyperion_getpool(poolid.apt_usdc)
-//     const currencytick =  await get_current_tick(poolinfo)
-//     const lower = await price2tick(poolinfo, lowerprice)
-//     const upper = await price2tick(poolinfo, upperprice)
-//     console.log(lower, upper)
-//     //const lower = currencytick - 1000;
-//     //const upper = currencytick + 1000;
-//     const params = await Hyperion_creatposition(amountapt, currencytick, lower, upper)
-//     const transaction : InputTransactionData = {
-//             data:{
-//                 function: params.function,
-//                 functionArguments: params.functionArguments,
-//                 typeArguments: params.typeArguments
-//             }
-//         }
-//     await send_entry_tx(transaction)
-// }
+export async function close_hyperion_positions(positionId: string) {
+   
+const position = await hyperionsdk.Position.fetchPositionById({
+    positionId: positionId,
+    address:  wallet.account?.address,
+  })
+  
+  const [currencyAAmount, currencyBAmount] = await hyperionsdk.Position.fetchTokensAmountByPositionId({
+    positionId,
+  })
+  
+  const params = {
+    positionId,
+    currencyA: "0x1::aptos_coin::AptosCoin",
+    currencyB: "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b",
+    currencyAAmount: parseInt(String(currencyAAmount)),
+    currencyBAmount: parseInt(String(currencyBAmount)),
+    deltaLiquidity: position[0].currentAmount,
+    slippage: 0.1,
+    recipient: wallet.account?.address,
+  }
+  
+  const payload = await hyperionsdk.Position.removeLiquidityTransactionPayload(params)
+  return payload
+}
+
+export async function close_all_hyperion_positions() {
+    const allpos = await Hyperion_getPostion()
+    console.log(allpos)
+    for (const [index, position] of allpos.entries()) {
+        const params = await close_hyperion_positions(position.position.objectId)
+        const transaction : InputTransactionData = {
+            data:{
+                function: params.function,
+                functionArguments: params.functionArguments,
+                typeArguments: params.typeArguments
+            }
+        }
+        await send_entry_tx(transaction)
+    }
+}
 
 export async function getaptprice() {
     const aptpool = await Hyperion_getpool(poolid.apt_usdc)
