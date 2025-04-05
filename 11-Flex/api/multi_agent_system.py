@@ -2,6 +2,7 @@ import os
 import asyncio
 from typing import Annotated, Dict, List, TypedDict, Optional
 import json
+import random
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -133,6 +134,74 @@ async def market_analysis_agent(state: State):
     return {"market_analysis": market_analysis}
 
 
+# 随机化资产分配的函数
+def randomize_allocations(portfolio_data: Dict) -> Dict:
+    """
+    对投资组合的资产分配添加随机波动，确保总和为100%
+
+    参数:
+        portfolio_data: 包含投资组合数据的字典
+
+    返回:
+        添加随机波动后的投资组合数据
+    """
+    print("\n应用随机化到资产分配...")
+
+    # 对每个时间段进行处理
+    for timeframe in portfolio_data:
+        all_positions = []
+        # 收集所有仓位
+        for platform in portfolio_data[timeframe]["platforms"]:
+            for position in portfolio_data[timeframe]["platforms"][platform][
+                "positions"
+            ]:
+                if "allocation" in position:
+                    all_positions.append(position)
+
+        if not all_positions:
+            continue
+
+        # 添加随机波动
+        random_values = []
+        for position in all_positions:
+            allocation_str = position["allocation"]
+            if isinstance(allocation_str, str) and "%" in allocation_str:
+                allocation_value = float(allocation_str.replace("%", ""))
+            else:
+                allocation_value = float(allocation_str)
+
+            # 添加-5%到+5%的随机波动
+            random_value = allocation_value * (1 + random.uniform(-0.10, 0.10))
+            # 确保值不小于0.1%
+            random_value = max(0.1, random_value)
+            random_values.append(random_value)
+
+        # 归一化确保总和为100%
+        total_random = sum(random_values)
+        scaling_factor = 100 / total_random
+
+        # 更新仓位
+        for i, position in enumerate(all_positions):
+            # 计算归一化后的值，保留2位小数
+            adjusted_value = round(random_values[i] * scaling_factor, 2)
+            # 如果是整数，添加小数部分
+            if adjusted_value == int(adjusted_value):
+                adjusted_value += random.randint(1, 99) / 100
+                adjusted_value = round(adjusted_value, 2)
+            position["allocation"] = f"{adjusted_value}%"
+
+        # 最后一个位置特殊处理，确保总和精确为100%
+        total_except_last = sum(
+            float(p["allocation"].replace("%", "")) for p in all_positions[:-1]
+        )
+        last_value = round(100 - total_except_last, 2)
+        all_positions[-1]["allocation"] = f"{last_value}%"
+
+        print(f"  {timeframe}时间段的资产分配已随机化，总和为100%")
+
+    return portfolio_data
+
+
 # Portfolio Manager：生成最终投资组合建议
 async def portfolio_manager(state: State):
     print("执行Portfolio Manager...")
@@ -179,7 +248,7 @@ async def portfolio_manager(state: State):
               {{
                 "asset": <资产名称，如"USDC", "BTC"等>,
                 "action": <操作，如"lend", "borrow"等>,
-                "allocation": <仓位比例，例如: "25%">,
+                "allocation": <仓位比例，例如: "21.86%"不能是整数>,
                 "rationale": <推荐理由>
               }}
             ]
@@ -189,7 +258,7 @@ async def portfolio_manager(state: State):
               {{
                 "asset": <资产名称，如"USDC", "APT"等>,
                 "action": <操作，如"lend", "borrow"等>,
-                "allocation": <仓位比例，例如: "25%">,
+                "allocation": <仓位比例，例如: "23.11%"不能是整数>,
                 "rationale": <推荐理由>
               }}
             ]
@@ -199,8 +268,8 @@ async def portfolio_manager(state: State):
               {{
                 "asset": <资产对，如"APT-USDC">,
                 "action": "add_liquidity",
-                "allocation": <仓位比例，例如: "50%">,
-                "fee_tier": <费率层级，如0.01, 0.05, 0.3, 1>,
+                "allocation": <仓位比例，例如: "48.21%"不能是整数>,
+                "fee_tier": <费率层级，0.01, 0.05, 0.3, 1>,
                 "price_range": {{
                   "lower": <价格下限>,
                   "upper": <价格上限>
@@ -272,7 +341,7 @@ async def portfolio_manager(state: State):
     - 只需要添加流动性以及lend usdc 不需要其他操作
     - 请直接输出JSON，不要使用Markdown代码块或其他格式
     - 必须严格按照上述JSON格式输出
-    - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%
+    - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%，"allocation"比例应该为两位小数，例如37.21，不要是整数。
     - est APY 要实际计算，忠于原始数据，是仓位的加权平均，不要受其他影响
     - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币以及usdc-apt池子
     """
@@ -314,19 +383,19 @@ async def portfolio_manager(state: State):
         # 验证资产类型是否符合要求
         allowed_assets = ["USDC", "APT", "APT-USDC"]
         invalid_assets = []
-        
+
         # 遍历所有时间段和平台检查资产类型
         for timeframe in portfolio_recommendation:
             for platform in portfolio_recommendation[timeframe]["platforms"]:
                 for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
                     if position.get("asset") not in allowed_assets:
                         invalid_assets.append(position.get("asset"))
-        
+
         if invalid_assets:
             print(f"警告：发现不允许的资产类型: {', '.join(set(invalid_assets))}")
             print("只允许使用以下资产类型: USDC, APT, APT-USDC")
             print("注意: Joule和Aries平台只允许USDC资产，Hyperion平台只允许APT-USDC资产")
-            
+
             # 自动修正资产类型
             for timeframe in portfolio_recommendation:
                 for platform in portfolio_recommendation[timeframe]["platforms"]:
@@ -346,7 +415,7 @@ async def portfolio_manager(state: State):
         for timeframe in portfolio_recommendation:
             total_allocation = 0
             allocations_by_platform = {}
-            
+
             for platform in portfolio_recommendation[timeframe]["platforms"]:
                 platform_allocation = 0
                 for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
@@ -357,35 +426,66 @@ async def portfolio_manager(state: State):
                             allocation_value = float(allocation_str.replace("%", ""))
                         else:
                             allocation_value = float(allocation_str)
-                        
+
                         platform_allocation += allocation_value
                         total_allocation += allocation_value
-                
+
                 allocations_by_platform[platform] = platform_allocation
-            
+
             # 检查总分配是否接近100%（允许小误差）
             if abs(total_allocation - 100) > 1:
                 print(f"警告：{timeframe}时间段的资产分配总和为{total_allocation}%，不等于100%")
                 print(f"各平台分配：{allocations_by_platform}")
-                
-                # 自动调整分配比例
-                adjustment_factor = 100 / total_allocation if total_allocation > 0 else 1
-                print(f"自动调整{timeframe}时间段的资产分配比例...")
-                
+
+                # 直接添加随机数并归一化
+                print(f"调整{timeframe}时间段的资产分配比例并添加随机波动...")
+
+                all_positions = []
+                # 收集所有仓位
                 for platform in portfolio_recommendation[timeframe]["platforms"]:
                     for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
                         if "allocation" in position:
-                            allocation_str = position["allocation"]
-                            if isinstance(allocation_str, str) and "%" in allocation_str:
-                                allocation_value = float(allocation_str.replace("%", ""))
-                            else:
-                                allocation_value = float(allocation_str)
-                            
-                            # 调整分配比例
-                            adjusted_allocation = round(allocation_value * adjustment_factor, 1)
-                            position["allocation"] = f"{adjusted_allocation}%"
-                
-                print(f"{timeframe}时间段的资产分配已调整为100%")
+                            all_positions.append(position)
+
+                # 添加随机波动
+                random_values = []
+                for position in all_positions:
+                    allocation_str = position["allocation"]
+                    if isinstance(allocation_str, str) and "%" in allocation_str:
+                        allocation_value = float(allocation_str.replace("%", ""))
+                    else:
+                        allocation_value = float(allocation_str)
+
+                    # 添加-5%到+5%的随机波动
+                    random_value = allocation_value * (1 + random.uniform(-0.05, 0.05))
+                    # 确保值不小于0.1%
+                    random_value = max(0.1, random_value)
+                    random_values.append(random_value)
+
+                # 归一化确保总和为100%
+                total_random = sum(random_values)
+                scaling_factor = 100 / total_random
+
+                # 更新仓位
+                for i, position in enumerate(all_positions):
+                    # 计算归一化后的值，保留2位小数
+                    adjusted_value = round(random_values[i] * scaling_factor, 2)
+                    # 如果是整数，添加小数部分
+                    if adjusted_value == int(adjusted_value):
+                        adjusted_value += random.randint(1, 99) / 100
+                        adjusted_value = round(adjusted_value, 2)
+                    position["allocation"] = f"{adjusted_value}%"
+
+                # 最后一个位置特殊处理，确保总和精确为100%
+                if all_positions:
+                    total_except_last = sum(
+                        float(p["allocation"].replace("%", ""))
+                        for p in all_positions[:-1]
+                    )
+                    last_value = round(100 - total_except_last, 2)
+                    all_positions[-1]["allocation"] = f"{last_value}%"
+
+                print(f"{timeframe}时间段的资产分配已调整为100%并添加随机波动")
     except Exception as e:
         # 如果无法解析JSON，返回错误信息和原始响应
         print(f"解析JSON失败: {str(e)}")
@@ -427,6 +527,21 @@ async def portfolio_manager(state: State):
                 },
             },
         }
+
+    # 应用随机化到资产分配
+    portfolio_recommendation = randomize_allocations(portfolio_recommendation)
+
+    # 将结果保存为JSON文件
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, "strategy.json")
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(portfolio_recommendation, f, ensure_ascii=False, indent=2)
+
+        print(f"策略已保存至: {file_path}")
+    except Exception as e:
+        print(f"保存策略文件失败: {e}")
 
     return {"portfolio_recommendation": portfolio_recommendation}
 
@@ -489,7 +604,7 @@ if __name__ == "__main__":
     result = asyncio.run(
         run_investment_advisor(
             risk_preference="medium",
-            custom_prompt="我想关注APT生态系统的机会，同时保持一部分资金在稳定币中",
+            custom_prompt="我想关注APT生态系统的机会，同时保持一部分资金在稳定币中，我期望年化收益10%",
         )
     )
 
