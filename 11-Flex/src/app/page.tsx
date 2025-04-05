@@ -10,7 +10,7 @@ function App() {
   const { connected } = useWallet();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative"> 
       <div id="Header" className="py-8 px-10">
         <Header connected={connected} />
       </div>
@@ -27,7 +27,7 @@ function App() {
       </div>
 
       {/* Background Pattern */}
-      <div className="absolute inset-0 -z-10 bg-grid-pattern" />
+      <div className="fixed inset-0 -z-10 bg-grid-pattern bg-repeat w-screen h-screen" />
     </div>
   );
 }
