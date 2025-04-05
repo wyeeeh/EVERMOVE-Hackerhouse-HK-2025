@@ -274,11 +274,12 @@ async def portfolio_manager(state: State):
     - 必须严格按照上述JSON格式输出
     - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%
     - est APY 要实际计算，忠于原始数据，是仓位的加权平均，不要受其他影响
+    - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币以及usdc-apt池子
     """
 
     # 调用LLM获取投资组合建议
     messages = state["messages"] + [{"role": "user", "content": prompt}]
-    response = llm.invoke(messages)  # 使用更强的模型
+    response = llm_plus.invoke(messages)  # 使用更强的模型
 
     # 解析结果
     try:
@@ -308,19 +309,83 @@ async def portfolio_manager(state: State):
 
         if missing_timeframes:
             print(
-                f"警告：缺少以下时间段 {', '.join(missing_timeframes)}，尝试构建基本结构"
+                f"警告：缺少以下时间段 {', '.join(missing_timeframes)}"
             )
-            # 构建基本结构
-            for timeframe in missing_timeframes:
-                portfolio_recommendation[timeframe] = {
-                    "expected_return": 0,
-                    "risk_index": 50,
-                    "platforms": {
-                        "Joule": {"positions": []},
-                        "Aries": {"positions": []},
-                        "Hyperion": {"positions": []},
-                    },
-                }
+        # 验证资产类型是否符合要求
+        allowed_assets = ["USDC", "APT", "APT-USDC"]
+        invalid_assets = []
+        
+        # 遍历所有时间段和平台检查资产类型
+        for timeframe in portfolio_recommendation:
+            for platform in portfolio_recommendation[timeframe]["platforms"]:
+                for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
+                    if position.get("asset") not in allowed_assets:
+                        invalid_assets.append(position.get("asset"))
+        
+        if invalid_assets:
+            print(f"警告：发现不允许的资产类型: {', '.join(set(invalid_assets))}")
+            print("只允许使用以下资产类型: USDC, APT, APT-USDC")
+            print("注意: Joule和Aries平台只允许USDC资产，Hyperion平台只允许APT-USDC资产")
+            
+            # 自动修正资产类型
+            for timeframe in portfolio_recommendation:
+                for platform in portfolio_recommendation[timeframe]["platforms"]:
+                    if platform in ["Joule", "Aries"]:
+                        for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
+                            if position.get("asset") != "USDC":
+                                print(f"自动修正: 将{platform}平台的{position.get('asset')}资产改为USDC")
+                                position["asset"] = "USDC"
+                                position["action"] = "lend"
+                    elif platform == "Hyperion":
+                        for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
+                            if position.get("asset") != "APT-USDC":
+                                print(f"自动修正: 将Hyperion平台的{position.get('asset')}资产改为APT-USDC")
+                                position["asset"] = "APT-USDC"
+                                position["action"] = "add_liquidity"
+        # 验证每个时间段内的资产分配总和是否为100%
+        for timeframe in portfolio_recommendation:
+            total_allocation = 0
+            allocations_by_platform = {}
+            
+            for platform in portfolio_recommendation[timeframe]["platforms"]:
+                platform_allocation = 0
+                for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
+                    # 提取百分比数值（去掉%符号并转换为浮点数）
+                    if "allocation" in position:
+                        allocation_str = position["allocation"]
+                        if isinstance(allocation_str, str) and "%" in allocation_str:
+                            allocation_value = float(allocation_str.replace("%", ""))
+                        else:
+                            allocation_value = float(allocation_str)
+                        
+                        platform_allocation += allocation_value
+                        total_allocation += allocation_value
+                
+                allocations_by_platform[platform] = platform_allocation
+            
+            # 检查总分配是否接近100%（允许小误差）
+            if abs(total_allocation - 100) > 1:
+                print(f"警告：{timeframe}时间段的资产分配总和为{total_allocation}%，不等于100%")
+                print(f"各平台分配：{allocations_by_platform}")
+                
+                # 自动调整分配比例
+                adjustment_factor = 100 / total_allocation if total_allocation > 0 else 1
+                print(f"自动调整{timeframe}时间段的资产分配比例...")
+                
+                for platform in portfolio_recommendation[timeframe]["platforms"]:
+                    for position in portfolio_recommendation[timeframe]["platforms"][platform]["positions"]:
+                        if "allocation" in position:
+                            allocation_str = position["allocation"]
+                            if isinstance(allocation_str, str) and "%" in allocation_str:
+                                allocation_value = float(allocation_str.replace("%", ""))
+                            else:
+                                allocation_value = float(allocation_str)
+                            
+                            # 调整分配比例
+                            adjusted_allocation = round(allocation_value * adjustment_factor, 1)
+                            position["allocation"] = f"{adjusted_allocation}%"
+                
+                print(f"{timeframe}时间段的资产分配已调整为100%")
     except Exception as e:
         # 如果无法解析JSON，返回错误信息和原始响应
         print(f"解析JSON失败: {str(e)}")

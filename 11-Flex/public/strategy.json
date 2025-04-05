@@ -1,7 +1,7 @@
 {
   "14 Days": {
-    "expected_return": 7.5,
-    "risk_index": 85,
+    "expected_return": 4.5,
+    "risk_index": 35,
     "platforms": {
       "Joule": {
         "positions": [
@@ -9,7 +9,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "40%",
-            "rationale": "高APR可以获得良好的短期收益"
+            "rationale": "低风险，稳定收益"
           }
         ]
       },
@@ -18,113 +18,31 @@
           {
             "asset": "USDC",
             "action": "lend",
-            "allocation": "20%",
-            "rationale": "利用APT的高潜力短期增长"
+            "allocation": "40%",
+            "rationale": "低风险，稳定收益"
           }
         ]
       },
       "Hyperion": {
         "positions": [
           {
-            "asset": "APT-USDT",
+            "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "40%",
-            "fee_tier": 0.05,
+            "allocation": "20%",
+            "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.7,
-              "upper": 5.0
+              "lower": 4.79,
+              "upper": 6.17
             },
-            "rationale": "短期价格预测吸引，集中流动性"
+            "rationale": "短期价格波动大，高收益潜力"
           }
         ]
       }
     }
   },
   "30 Days": {
-    "expected_return": 9.0,
-    "risk_index": 75,
-    "platforms": {
-      "Joule": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "30%",
-            "rationale": "维持稳定收益"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "APT",
-            "action": "lend",
-            "allocation": "30%",
-            "rationale": "APT的中期前景看好"
-          }
-        ]
-      },
-      "Hyperion": {
-        "positions": [
-          {
-            "asset": "APT-USDT",
-            "action": "add_liquidity",
-            "allocation": "40%",
-            "fee_tier": 0.3,
-            "price_range": {
-              "lower": 4.6,
-              "upper": 5.4
-            },
-            "rationale": "考虑到中期的波动性，扩大价格范围"
-          }
-        ]
-      }
-    }
-  },
-  "90 Days": {
-    "expected_return": 5.0,
-    "risk_index": 60,
-    "platforms": {
-      "Joule": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "40%",
-            "rationale": "保持收益稳健"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "ETH",
-            "action": "lend",
-            "allocation": "20%",
-            "rationale": "ETH在未来的潜力大"
-          }
-        ]
-      },
-      "Hyperion": {
-        "positions": [
-          {
-            "asset": "APT-USDT",
-            "action": "add_liquidity",
-            "allocation": "40%",
-            "fee_tier": 0.3,
-            "price_range": {
-              "lower": 4.5,
-              "upper": 6.5
-            },
-            "rationale": "较宽的价格区间以应对市场波动"
-          }
-        ]
-      }
-    }
-  },
-  "180 Days": {
-    "expected_return": 4.0,
-    "risk_index": 50,
+    "expected_return": 4.7,
+    "risk_index": 30,
     "platforms": {
       "Joule": {
         "positions": [
@@ -132,32 +50,114 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "50%",
-            "rationale": "稳健收益，降低风险"
+            "rationale": "低风险，稳定收益"
           }
         ]
       },
       "Aries": {
         "positions": [
           {
-            "asset": "ETH",
+            "asset": "USDC",
             "action": "lend",
-            "allocation": "20%",
-            "rationale": "中长期看好ETH的增长"
+            "allocation": "30%",
+            "rationale": "低风险，稳定收益"
           }
         ]
       },
       "Hyperion": {
         "positions": [
           {
-            "asset": "APT-USDT",
+            "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "30%",
+            "allocation": "20%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.65,
+              "upper": 5.49
+            },
+            "rationale": "中短期价格波动，收益潜力"
+          }
+        ]
+      }
+    }
+  },
+  "90 Days": {
+    "expected_return": 5.0,
+    "risk_index": 25,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "60%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "20%",
+            "fee_tier": 0.3,
+            "price_range": {
+              "lower": 4.5,
+              "upper": 5.5
+            },
+            "rationale": "长期价格波动，收益潜力"
+          }
+        ]
+      }
+    }
+  },
+  "180 Days": {
+    "expected_return": 5.2,
+    "risk_index": 20,
+    "platforms": {
+      "Joule": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "70%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Aries": {
+        "positions": [
+          {
+            "asset": "USDC",
+            "action": "lend",
+            "allocation": "20%",
+            "rationale": "低风险，稳定收益"
+          }
+        ]
+      },
+      "Hyperion": {
+        "positions": [
+          {
+            "asset": "APT-USDC",
+            "action": "add_liquidity",
+            "allocation": "10%",
             "fee_tier": 0.3,
             "price_range": {
               "lower": 4.0,
-              "upper": 7.0
+              "upper": 6.0
             },
-            "rationale": "极大范围组合应对市场不确定性"
+            "rationale": "长期价格波动，收益潜力"
           }
         ]
       }
