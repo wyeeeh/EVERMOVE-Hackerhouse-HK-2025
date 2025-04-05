@@ -4,7 +4,8 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { Loader2, ChartNoAxesCombined, ShieldAlert, Coins, WalletMinimal, ChartCandlestick } from "lucide-react";
 
 import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants";
 import { Joule_borrowToken, Joule_lendToken } from "@/utils/JouleUtil";
@@ -177,181 +178,252 @@ export function ExeuteTrade() {
     }
   };
 
+  // 声明PlatformKey类型
+  type PlatformKey = keyof TradeStrategy["platforms"];
+
+  // 滑块联动函数
+  const handleSliderChange = (platform: string, value: number) => {
+    if (!currentStrategy) return;
+
+    // 确保 platform 是有效的平台键
+    if (!["Joule", "Aries", "Hyperion"].includes(platform)) return;
+
+    const platformKey = platform as PlatformKey;
+    const remainingPlatforms = (Object.keys(currentStrategy.platforms) as PlatformKey[]).filter(
+      (p) => p !== platformKey,
+    );
+
+    const currentAmounts = Object.entries(currentStrategy.platforms).reduce(
+      (acc, [p, data]) => {
+        acc[p as PlatformKey] = allocation_num(data?.positions[0]?.allocation || "0%");
+        return acc;
+      },
+      {} as Record<PlatformKey, number>,
+    );
+
+    const remainingRatio = remainingPlatforms.reduce((acc, p) => acc + currentAmounts[p], 0);
+    const ratios = remainingPlatforms.reduce(
+      (acc, p) => {
+        acc[p] = remainingRatio === 0 ? 1 / remainingPlatforms.length : currentAmounts[p] / remainingRatio;
+        return acc;
+      },
+      {} as Record<PlatformKey, number>,
+    );
+
+    const remaining = 1 - value;
+    const updatedStrategy = { ...currentStrategy };
+
+    // 更新当前平台的分配
+    if (updatedStrategy.platforms[platformKey]?.positions[0]) {
+      updatedStrategy.platforms[platformKey]!.positions[0].allocation = `${(value * 100).toFixed(0)}%`;
+    }
+
+    // 更新其他平台的分配
+    remainingPlatforms.forEach((p) => {
+      if (updatedStrategy.platforms[p]?.positions[0]) {
+        updatedStrategy.platforms[p]!.positions[0].allocation = `${(remaining * ratios[p] * 100).toFixed(0)}%`;
+      }
+    });
+
+    setCurrentStrategy(updatedStrategy);
+
+    console.log("Updated strategy:", updatedStrategy);
+  };
+
   return (
-    <Card className="w-full shadow-lg border-t-4 border-t-blue-500">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle className="text-2xl font-bold">执行交易策略</CardTitle>
-            <CardDescription>
-              选择时间段并输入金额来执行投资策略
-              {lastUpdated && <span className="ml-2 text-xs opacity-70">最后更新: {lastUpdated}</span>}
-            </CardDescription>
-          </div>
-          {isLoading && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
+    <div className="relative group">
+      {/* div外发光效果 */}
+      <div className="glow-effect" />
+
+      {/* 主容器：上下左右边距、弹性布局、圆角、半透明背景、最大宽高限制、滚动条、边框 */}
+      <div className="relative flex flex-col gap-4 p-8 rounded-lg bg-card overflow-auto border">
+        {/* 标题栏：两端对齐布局 */}
+        <div className="flex items-center justify-between space-y-0 pb-2">
+          <div className="text-2xl font-bold">执行交易策略</div>
+          <ChartCandlestick />
         </div>
-      </CardHeader>
-      <CardContent>
-        {isLoading && !currentStrategy ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <Loader2 className="h-10 w-10 animate-spin text-blue-500 mb-4" />
-            <p>加载策略中...</p>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 p-4 rounded-md text-red-800">
-            <p className="font-semibold">加载失败</p>
-            <p className="text-sm">{error}</p>
-            <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
-              重试
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="flex flex-col space-y-2 mb-4">
-                <label className="font-medium">选择投资周期</label>
-                <Tabs defaultValue={selectedPeriod} onValueChange={setSelectedPeriod} className="w-full">
-                  <TabsList className="w-full grid grid-cols-4">
-                    <TabsTrigger value="14 Days">14天</TabsTrigger>
-                    <TabsTrigger value="30 Days">30天</TabsTrigger>
-                    <TabsTrigger value="90 Days">90天</TabsTrigger>
-                    <TabsTrigger value="180 Days">180天</TabsTrigger>
-                  </TabsList>
-                </Tabs>
+        {isLoading && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
+        <Card>
+          <CardHeader>
+          <div className="flex justify-between items-center">
+                    <label className="font-medium">选择投资周期</label>
+                    {lastUpdated && <span className="text-xs opacity-70">最后更新: {lastUpdated}</span>}
+                    </div>
+          </CardHeader>
+          <CardContent>
+            {isLoading && !currentStrategy ? (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Loader2 className="h-10 w-10 animate-spin text-blue-500 mb-4" />
+                <p>加载策略中...</p>
               </div>
-
-              {currentStrategy && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4" />
-                        <div className="text-base font-semibold">预期收益</div>
-                      </CardTitle>
-                    </CardHeader>
-                      <CardContent>
-                      <p className="text-2xl font-bold">
-                        {currentStrategy.expected_return}%
-                      </p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <ShieldAlert className="h-4 w-4" />
-                        <div className="text-base font-semibold">风险指数</div>
-                      </CardTitle>
-                    </CardHeader>
-                      <CardContent>
-                      <div className="flex items-center">
-                        <p className="text-2xl font-bold">
-                          {currentStrategy.risk_index}
-                        </p>
-                        <div className="ml-2 flex-1">
-                          <Progress 
-                            value={currentStrategy.risk_index} 
-                            className={getRiskColor(currentStrategy.risk_index)}
-                          />
-                        </div>
-                      </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Coins className="h-4 w-4" />
-                        <div className="text-base font-semibold">资产分配</div>
-                      </CardTitle>
-                    </CardHeader>
-                      <CardContent>
-                      <div className="h-32 flex">
-                    <PortfolioBarChart
-                      data={[{
-                        term: selectedPeriod,
-                        joule: currentStrategy.platforms?.Joule?.positions.reduce(
-                          (sum, pos) => sum + parseInt(pos.allocation), 0
-                        ) || 0,
-                        aries: currentStrategy.platforms?.Aries?.positions.reduce(
-                          (sum, pos) => sum + parseInt(pos.allocation), 0
-                        ) || 0,
-                        hyperion: currentStrategy.platforms?.Hyperion?.positions.reduce(
-                          (sum, pos) => sum + parseInt(pos.allocation), 0
-                        ) || 0,
-                      }]}
-                    />
-                    </div>
-                    <div className="space-y-4">
-                      {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
-                        <div key={platform} className="border-b pb-3 last:border-b-0 last:pb-0">
-                          <div className="flex items-center mb-2">
-                            <Badge variant="outline" className="mr-2">
-                              {platform}
-                            </Badge>
-                          </div>
-                          {data.positions.length > 0 ? (
-                            <ul className="space-y-2">
-                              {data.positions.map((pos, idx) => (
-                                <li key={idx} className="bg-slate-50 p-2 rounded-md text-sm">
-                                  <div className="flex justify-between">
-                                    <span className="font-medium">
-                                      {pos.asset} ({pos.action})
-                                    </span>
-                                    <span className="font-semibold">{pos.allocation}</span>
-                                  </div>
-                                  <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
-                                  {pos.price_range && (
-                                    <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
-                                      价格区间: {pos.price_range.lower} - {pos.price_range.upper}
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-slate-500">无仓位分配</p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                      </CardContent>
-                    </Card>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col space-y-2">
-              <div className="flex items-center">
-                <Input
-                  type="number"
-                  placeholder="输入金额 USDC"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="flex-1 mr-2"
-                />
-                <Button
-                  onClick={handleExecute}
-                  disabled={!currentStrategy || isExecuting || !amount}
-                  className="whitespace-nowrap"
-                >
-                  {isExecuting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      执行中
-                    </>
-                  ) : (
-                    "执行交易"
-                  )}
+            ) : error ? (
+              <div className="bg-red-50 p-4 rounded-md text-red-800">
+                <p className="font-semibold">加载失败</p>
+                <p className="text-sm">{error}</p>
+                <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
+                  重试
                 </Button>
               </div>
-              <p className="text-xs text-slate-500">*执行交易将按照选定策略分配您的资产</p>
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+            ) : (
+              <div className="space-y-6">
+                  <div className="flex flex-col space-y-2">
+                    <Tabs defaultValue={selectedPeriod} onValueChange={setSelectedPeriod} className="w-full">
+                      <TabsList className="w-full grid grid-cols-4">
+                        <TabsTrigger value="14 Days">14天</TabsTrigger>
+                        <TabsTrigger value="30 Days">30天</TabsTrigger>
+                        <TabsTrigger value="90 Days">90天</TabsTrigger>
+                        <TabsTrigger value="180 Days">180天</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  </div>
+
+                  {currentStrategy && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <ChartNoAxesCombined className="h-4 w-4" />
+                              <div className="text-base font-semibold">预期收益</div>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-2xl font-bold">{currentStrategy.expected_return}%</p>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <ShieldAlert className="h-4 w-4" />
+                              <div className="text-base font-semibold">风险指数</div>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex items-center">
+                              <p className="text-2xl font-bold">{currentStrategy.risk_index}</p>
+                              <div className="ml-2 flex-1">
+                                <Progress
+                                  value={currentStrategy.risk_index}
+                                  className={getRiskColor(currentStrategy.risk_index)}
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Coins className="h-4 w-4" />
+                            <div className="text-base font-semibold">资产分配</div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="h-24 flex">
+                            <PortfolioBarChart
+                              data={[
+                                {
+                                  term: selectedPeriod,
+                                  joule:
+                                    currentStrategy.platforms?.Joule?.positions.reduce(
+                                      (sum, pos) => sum + parseInt(pos.allocation),
+                                      0,
+                                    ) || 0,
+                                  aries:
+                                    currentStrategy.platforms?.Aries?.positions.reduce(
+                                      (sum, pos) => sum + parseInt(pos.allocation),
+                                      0,
+                                    ) || 0,
+                                  hyperion:
+                                    currentStrategy.platforms?.Hyperion?.positions.reduce(
+                                      (sum, pos) => sum + parseInt(pos.allocation),
+                                      0,
+                                    ) || 0,
+                                },
+                              ]}
+                            />
+                          </div>
+
+                          <div className="space-y-4" id="positionAllocationCard">
+                            {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
+                              <div key={platform} className="">
+                                <div className="flex items-center justify-between mb-2">
+                                  <Badge variant="outline" className="mr-2">
+                                    {platform}
+                                  </Badge>
+                                  <span className="font-semibold">{data.positions[0]?.allocation}</span>
+                                </div>
+                                {data.positions.length > 0 ? (
+                                  <ul className="space-y-2">
+                                    {data.positions.map((pos, idx) => (
+                                      <div className="bg-slate-50 p-4 rounded-md text-sm space-y-2">
+                                        <li key={idx}>
+                                          <div className="flex justify-between">
+                                            <span className="font-medium">
+                                              {pos.asset} ({pos.action})
+                                            </span>
+                                          </div>
+                                          <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
+                                          {pos.price_range && (
+                                            <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
+                                              价格区间: {pos.price_range.lower} - {pos.price_range.upper}
+                                            </div>
+                                          )}
+                                        </li>
+
+                                        <Slider
+                                          value={[allocation_num(data.positions[0]?.allocation || "0%") * 100]}
+                                          max={100}
+                                          step={1}
+                                          onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
+                                          className="mb-2"
+                                        />
+                                      </div>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-sm text-slate-500">无仓位分配</p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center">
+                    <Input
+                      type="number"
+                      placeholder="输入金额 USDC"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="flex-1 mr-2"
+                    />
+                    <Button
+                      onClick={handleExecute}
+                      disabled={!currentStrategy || isExecuting || !amount}
+                      className="whitespace-nowrap"
+                    >
+                      {isExecuting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          执行中
+                        </>
+                      ) : (
+                        "执行交易"
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-slate-500">*执行交易将按照选定策略分配您的资产</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
