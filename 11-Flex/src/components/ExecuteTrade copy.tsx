@@ -58,7 +58,7 @@ function allocation_num(x: string) {
 export function ExeuteTrade() {
   const [amount, setAmount] = useState<string>("");
   const [strategies, setStrategies] = useState<AllStrategies>({});
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("30 Days");
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("14 Days");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -94,7 +94,7 @@ export function ExeuteTrade() {
         const timestamp = new Date().getTime();
         const response = await fetch(`/strategy.json?t=${timestamp}`);
         if (!response.ok) {
-          throw new Error("Loading Strategy Failed");
+          throw new Error("无法加载策略文件");
         }
         const data: AllStrategies = await response.json();
         setStrategies(data);
@@ -115,8 +115,8 @@ export function ExeuteTrade() {
     // 初始加载
     fetchStrategy();
 
-    // 定时刷新，每30秒检查一次更新
-    const intervalId = setInterval(fetchStrategy, 30000);
+    // 定时刷新，每10秒检查一次更新
+    const intervalId = setInterval(fetchStrategy, 10000);
 
     // 组件卸载时清除定时器
     return () => clearInterval(intervalId);
@@ -132,7 +132,7 @@ export function ExeuteTrade() {
   // 执行交易
   const handleExecute = async () => {
     if (!amount || isNaN(Number(amount))) {
-      console.error("Please Input Valid Number");
+      console.error("请输入有效金额");
       return;
     }
 
@@ -233,26 +233,26 @@ export function ExeuteTrade() {
       <div className="relative flex flex-col gap-4 p-8 rounded-lg bg-card overflow-auto border">
         {/* 标题栏：两端对齐布局 */}
         <div className="flex items-center justify-between space-y-0 pb-2">
-          <div className="text-2xl font-bold">Trade</div>
+          <div className="text-2xl font-bold">执行交易策略</div>
           <ChartCandlestick />
         </div>
         {isLoading && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
         <Card>
           <CardHeader>
           <div className="flex justify-between items-center">
-                    <label className="font-medium">Select Investment Terms</label>
-                    {lastUpdated && <span className="text-xs opacity-70">Last Updated: {lastUpdated}</span>}
+                    <label className="font-medium">选择投资周期</label>
+                    {lastUpdated && <span className="text-xs opacity-70">最后更新: {lastUpdated}</span>}
                     </div>
           </CardHeader>
           <CardContent>
             {isLoading && !currentStrategy ? (
               <div className="flex flex-col items-center justify-center py-8">
                 <Loader2 className="h-10 w-10 animate-spin text-blue-500 mb-4" />
-                <p>Loading Strategies...</p>
+                <p>加载策略中...</p>
               </div>
             ) : error ? (
               <div className="bg-red-50 p-4 rounded-md text-red-800">
-                <p className="font-semibold">Load Strategy Failed!</p>
+                <p className="font-semibold">加载失败</p>
                 <p className="text-sm">{error}</p>
                 <Button variant="outline" className="mt-2" onClick={() => window.location.reload()}>
                   重试
@@ -263,10 +263,10 @@ export function ExeuteTrade() {
                   <div className="flex flex-col space-y-2">
                     <Tabs defaultValue={selectedPeriod} onValueChange={setSelectedPeriod} className="w-full">
                       <TabsList className="w-full grid grid-cols-4">
-                        <TabsTrigger value="14 Days">14 Days</TabsTrigger>
-                        <TabsTrigger value="30 Days">30 Days</TabsTrigger>
-                        <TabsTrigger value="90 Days">90 Days</TabsTrigger>
-                        <TabsTrigger value="180 Days">180 Days</TabsTrigger>
+                        <TabsTrigger value="14 Days">14天</TabsTrigger>
+                        <TabsTrigger value="30 Days">30天</TabsTrigger>
+                        <TabsTrigger value="90 Days">90天</TabsTrigger>
+                        <TabsTrigger value="180 Days">180天</TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </div>
@@ -289,7 +289,7 @@ export function ExeuteTrade() {
                           <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                               <ShieldAlert className="h-4 w-4" />
-                              <div className="text-base font-semibold">Risk Index</div>
+                              <div className="text-base font-semibold">风险指数</div>
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
@@ -310,7 +310,7 @@ export function ExeuteTrade() {
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <Coins className="h-4 w-4" />
-                            <div className="text-base font-semibold">Position Allocation</div>
+                            <div className="text-base font-semibold">资产分配</div>
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -377,7 +377,7 @@ export function ExeuteTrade() {
                                     ))}
                                   </ul>
                                 ) : (
-                                  <p className="text-sm text-slate-500">No Position Allocated</p>
+                                  <p className="text-sm text-slate-500">无仓位分配</p>
                                 )}
                               </div>
                             ))}
@@ -388,15 +388,14 @@ export function ExeuteTrade() {
                   )}
 
                 <div className="flex flex-col space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center">
                     <Input
                       type="number"
-                      placeholder="1000"
+                      placeholder="输入金额 USDC"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className="flex-1"
+                      className="flex-1 mr-2"
                     />
-                    <text className="opacity-70">USDC</text>
                     <Button
                       onClick={handleExecute}
                       disabled={!currentStrategy || isExecuting || !amount}
@@ -405,14 +404,14 @@ export function ExeuteTrade() {
                       {isExecuting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting...
+                          执行中
                         </>
                       ) : (
-                        "Submit"
+                        "执行交易"
                       )}
                     </Button>
                   </div>
-                  <p className="text-xs text-slate-500">*Executing trades will allocate your assets according to the selected strategy</p>
+                  <p className="text-xs text-slate-500">*执行交易将按照选定策略分配您的资产</p>
                 </div>
               </div>
             )}

@@ -1,6 +1,6 @@
 {
   "14 Days": {
-    "expected_return": 4.5,
+    "expected_return": 133.9,
     "risk_index": 35,
     "platforms": {
       "Joule": {
@@ -9,17 +9,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "40%",
-            "rationale": "低风险，稳定收益"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "40%",
-            "rationale": "低风险，稳定收益"
+            "rationale": "Low risk stablecoin lending"
           }
         ]
       },
@@ -28,20 +18,20 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "20%",
+            "allocation": "60%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.79,
-              "upper": 6.17
+              "lower": 4.7,
+              "upper": 5.2
             },
-            "rationale": "短期价格波动大，高收益潜力"
+            "rationale": "Narrow range for short-term high yield"
           }
         ]
       }
     }
   },
   "30 Days": {
-    "expected_return": 4.7,
+    "expected_return": 133.9,
     "risk_index": 30,
     "platforms": {
       "Joule": {
@@ -50,17 +40,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "50%",
-            "rationale": "低风险，稳定收益"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "30%",
-            "rationale": "低风险，稳定收益"
+            "rationale": "Stable low-risk returns"
           }
         ]
       },
@@ -69,20 +49,20 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "20%",
+            "allocation": "50%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.65,
-              "upper": 5.49
+              "lower": 4.6,
+              "upper": 5.3
             },
-            "rationale": "中短期价格波动，收益潜力"
+            "rationale": "Moderate range for medium-term"
           }
         ]
       }
     }
   },
   "90 Days": {
-    "expected_return": 5.0,
+    "expected_return": 133.9,
     "risk_index": 25,
     "platforms": {
       "Joule": {
@@ -91,17 +71,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "60%",
-            "rationale": "低风险，稳定收益"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "20%",
-            "rationale": "低风险，稳定收益"
+            "rationale": "Capital preservation focus"
           }
         ]
       },
@@ -110,20 +80,20 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "20%",
+            "allocation": "40%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.5,
+              "lower": 4.4,
               "upper": 5.5
             },
-            "rationale": "长期价格波动，收益潜力"
+            "rationale": "Wider range for long-term safety"
           }
         ]
       }
     }
   },
   "180 Days": {
-    "expected_return": 5.2,
+    "expected_return": 133.9,
     "risk_index": 20,
     "platforms": {
       "Joule": {
@@ -132,17 +102,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "70%",
-            "rationale": "低风险，稳定收益"
-          }
-        ]
-      },
-      "Aries": {
-        "positions": [
-          {
-            "asset": "USDC",
-            "action": "lend",
-            "allocation": "20%",
-            "rationale": "低风险，稳定收益"
+            "rationale": "Maximum capital protection"
           }
         ]
       },
@@ -151,13 +111,13 @@
           {
             "asset": "APT-USDC",
             "action": "add_liquidity",
-            "allocation": "10%",
+            "allocation": "30%",
             "fee_tier": 0.3,
             "price_range": {
-              "lower": 4.0,
-              "upper": 6.0
+              "lower": 4.2,
+              "upper": 5.8
             },
-            "rationale": "长期价格波动，收益潜力"
+            "rationale": "Widest range for long-term stability"
           }
         ]
       }
