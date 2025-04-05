@@ -186,6 +186,7 @@ export function StrategyCard({ term, expected_return, risk_index, platforms, onA
                 style={{ overflow: "hidden" }}
               >
                 <div className="space-y-2 pb-4">
+                  
                   <PortfolioBarChart data={calculateChartData()} />
                   <div className="flex flex-col space-y-2">
                     {renderPlatformAllocations()}

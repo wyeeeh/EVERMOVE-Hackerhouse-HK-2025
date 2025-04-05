@@ -102,8 +102,8 @@ export function AriesPositions({ isaptosAgentReady , onTotalValueChange}: AgentU
                                 {position.coin}
                               </div>
                             </TableCell>
-                            <TableCell>${position.lend.toFixed(4)}</TableCell>
-                            <TableCell>${position.borrow.toFixed(4)}</TableCell>
+                            <TableCell>{position.lend.toFixed(4)}</TableCell>
+                            <TableCell>{position.borrow.toFixed(4)}</TableCell>
                           </TableRow>
                         ))
                       )}

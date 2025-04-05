@@ -46,4 +46,4 @@ example-collection/
 **/.flex_logo/*
 
 # pyenv
-**/api/flex/*
+/api/flex/
