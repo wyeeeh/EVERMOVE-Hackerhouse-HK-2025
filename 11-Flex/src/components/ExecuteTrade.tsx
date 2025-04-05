@@ -291,7 +291,7 @@ export function ExeuteTrade() {
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
                             <ChartNoAxesCombined className="h-4 w-4" />
-                            <div className="text-base font-semibold">预期收益</div>
+                            <div className="text-base font-semibold">Est. APY</div>
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
