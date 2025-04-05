@@ -159,10 +159,10 @@ export function ExeuteTrade() {
       const pos2 = strategy.platforms?.Aries?.positions[0]!;
       const amount2 = Number(amount) * allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset]);
       console.log("check", amount2, pos2.asset);
-      await Aries_lendToken(amount2, pos2.asset);
+      await Aries_lendToken(BigInt(Math.floor(amount2)), pos2.asset);
       await sleep(500)
       //Borrow Aries:
-      await Aries_borrowToken(Number(Math.floor((amount2 / aptprice) * 0.7 * 100)), "APT");
+      await Aries_borrowToken(BigInt(Math.floor((amount2 / aptprice) * 0.7 * 100)), "APT");
       await sleep(1000)
       //Create Hyperion:
       const pos3 = strategy.platforms?.Hyperion?.positions[0]!;
