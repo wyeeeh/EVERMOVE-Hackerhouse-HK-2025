@@ -64,7 +64,6 @@ export function ExeuteTrade() {
   const [error, setError] = useState<string>("");
   const [currentStrategy, setCurrentStrategy] = useState<TradeStrategy>();
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [platformAmounts, setPlatformAmounts] = useState<Record<string, number>>({});
 
 
   // 获取当前选择的策略
@@ -124,17 +123,6 @@ export function ExeuteTrade() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // 初始化 platformAmounts
-  useEffect(() => {
-    if (currentStrategy) {
-      const amounts = Object.entries(currentStrategy.platforms).reduce((acc, [platform, data]) => {
-        acc[platform] = data.positions.reduce((sum, pos) => sum + allocation_num(pos.allocation), 0);
-        return acc;
-      }, {} as Record<string, number>);
-      setPlatformAmounts(amounts);
-    }
-  }, [currentStrategy]);
-
 
   // 获取风险等级对应的颜色
   const getRiskColor = (riskIndex: number): string => {
@@ -186,28 +174,49 @@ export function ExeuteTrade() {
     }
   };
 
-  // 滑块处理比例函数
-const handleSliderChange = (platform: string, value: number) => {
-  const remainingPlatforms = Object.keys(platformAmounts).filter(p => p !== platform);
-  const remainingRatio = remainingPlatforms.reduce((acc, p) => acc + platformAmounts[p], 0);
-  
-  const ratios = remainingPlatforms.reduce((acc, p) => {
-    acc[p] = remainingRatio === 0 ? 1/remainingPlatforms.length : platformAmounts[p] / remainingRatio;
-    return acc;
-  }, {} as Record<string, number>);
+  // 声明PlatformKey类型
+  type PlatformKey = keyof TradeStrategy['platforms'];
 
-  const remaining = 1 - value;
-  const updatedAmounts = {
-    ...platformAmounts,
-    [platform]: value,
-    ...remainingPlatforms.reduce((acc, p) => {
-      acc[p] = remaining * ratios[p];
+  // 滑块联动函数
+  const handleSliderChange = (platform: string, value: number) => {
+    if (!currentStrategy) return;
+    
+    // 确保 platform 是有效的平台键
+    if (!['Joule', 'Aries', 'Hyperion'].includes(platform)) return;
+    
+    const platformKey = platform as PlatformKey;
+    const remainingPlatforms = (Object.keys(currentStrategy.platforms) as PlatformKey[])
+      .filter(p => p !== platformKey);
+      
+    const currentAmounts = Object.entries(currentStrategy.platforms).reduce((acc, [p, data]) => {
+      acc[p as PlatformKey] = allocation_num(data?.positions[0]?.allocation || "0%");
       return acc;
-    }, {} as Record<string, number>)
+    }, {} as Record<PlatformKey, number>);
+    
+    const remainingRatio = remainingPlatforms.reduce((acc, p) => acc + currentAmounts[p], 0);
+    const ratios = remainingPlatforms.reduce((acc, p) => {
+      acc[p] = remainingRatio === 0 ? 1/remainingPlatforms.length : currentAmounts[p] / remainingRatio;
+      return acc;
+    }, {} as Record<PlatformKey, number>);
+  
+    const remaining = 1 - value;
+    const updatedStrategy = { ...currentStrategy };
+    
+    // 更新当前平台的分配
+    if (updatedStrategy.platforms[platformKey]?.positions[0]) {
+      updatedStrategy.platforms[platformKey]!.positions[0].allocation = `${(value * 100).toFixed(0)}%`;
+    }
+    
+    // 更新其他平台的分配
+    remainingPlatforms.forEach(p => {
+      if (updatedStrategy.platforms[p]?.positions[0]) {
+        updatedStrategy.platforms[p]!.positions[0].allocation = 
+          `${(remaining * ratios[p] * 100).toFixed(0)}%`;
+      }
+    });
+  
+    setCurrentStrategy(updatedStrategy);
   };
-
-  setPlatformAmounts(updatedAmounts);
-};
 
   return (
     <Card className="w-full shadow-lg border-t-4 border-t-blue-500">
@@ -318,55 +327,50 @@ const handleSliderChange = (platform: string, value: number) => {
                     </div>
                     
                     <div className="space-y-4" id="positionAllocationCard">
-                      {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
-                        <div key={platform} className="border-b pb-3 last:border-b-0 last:pb-0">
-                          <div className="flex items-center mb-2">
-                            <Badge variant="outline" className="mr-2">
-                              {platform}
-                            </Badge>
-                          </div>
-                          {data.positions.length > 0 ? (
-                            <ul className="space-y-2">
-                              {data.positions.map((pos, idx) => (
-                                <li key={idx} className="bg-slate-50 p-2 rounded-md text-sm">
-                                  <div className="flex justify-between">
-                                    <span className="font-medium">
-                                      {pos.asset} ({pos.action})
-                                    </span>
-                                    <span className="font-semibold">{pos.allocation}</span>
-                                  </div>
-                                  <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
-                                  {pos.price_range && (
-                                    <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
-                                      价格区间: {pos.price_range.lower} - {pos.price_range.upper}
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-slate-500">无仓位分配</p>
-                          )}
-                        </div>
-                      ))}
+                    {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
+    <div key={platform} className="">
+      <div className="flex items-center justify-between mb-2">
+        <Badge variant="outline" className="mr-2">
+          {platform}
+        </Badge>
+        <span className="font-semibold">{data.positions[0]?.allocation}</span>
+      </div>
+      {data.positions.length > 0 ? (
+        <ul className="space-y-2">
+          {data.positions.map((pos, idx) => (
+            <div className="bg-slate-50 p-4 rounded-md text-sm space-y-2">
+            <li key={idx}>
+              <div className="flex justify-between">
+                <span className="font-medium">
+                  {pos.asset} ({pos.action})
+                </span>
+              </div>
+              <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
+              {pos.price_range && (
+                <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
+                  价格区间: {pos.price_range.lower} - {pos.price_range.upper}
+                </div>
+              )}
+            </li>
+
+            <Slider
+        value={[allocation_num(data.positions[0]?.allocation || "0%") * 100]}
+        max={100}
+        step={1}
+        onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
+        className="mb-2"
+      />
+            </div>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-slate-500">无仓位分配</p>
+      )}
+      
+    </div>
+  ))}
                     </div>
 
-                    <div className="space-y-4 mt-4">
-                      {Object.entries(platformAmounts).map(([platform, amount]) => (
-                        <div key={platform} className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="font-medium">{platform}</span>
-                            <span>{(amount * 100).toFixed(0)}%</span>
-                          </div>
-                          <Slider
-                            value={[amount * 100]}
-                            max={100}
-                            step={1}
-                            onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
-                          />
-                        </div>
-                      ))}
-                    </div>
                       </CardContent>
                     </Card>
                 </div>
