@@ -3,7 +3,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ChevronDown, ChevronUp, ChartCandlestick } from "lucide-react";
+import { ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -111,7 +111,7 @@ export function UserPreferenceSlider({ apy, riskLimit, onApyChange, onRiskChange
         {/* 标题栏：两端对齐布局 */}
         <div className="flex items-center justify-between space-y-0 pb-2">
           <span className="text-2xl font-bold">Preferences</span>
-          <ChartCandlestick />
+          <SlidersHorizontal />
         </div>
         <Card>
           <CardContent className="p-6 space-y-10">
