@@ -239,10 +239,10 @@ export function ExeuteTrade() {
         {isLoading && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
         <Card>
           <CardHeader>
-          <div className="flex justify-between items-center">
-                    <label className="font-medium">Select Investment Terms</label>
-                    {lastUpdated && <span className="text-xs opacity-70">Last Updated: {lastUpdated}</span>}
-                    </div>
+            <div className="flex justify-between items-center">
+              <label className="font-medium">Select Investment Terms</label>
+              {lastUpdated && <span className="text-xs opacity-70">Last Updated: {lastUpdated}</span>}
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading && !currentStrategy ? (
@@ -260,143 +260,145 @@ export function ExeuteTrade() {
               </div>
             ) : (
               <div className="space-y-6">
-                  <div className="flex flex-col space-y-2">
-                    <Tabs defaultValue={selectedPeriod} onValueChange={setSelectedPeriod} className="w-full">
-                      <TabsList className="w-full grid grid-cols-4">
-                        <TabsTrigger value="14 Days">14 Days</TabsTrigger>
-                        <TabsTrigger value="30 Days">30 Days</TabsTrigger>
-                        <TabsTrigger value="90 Days">90 Days</TabsTrigger>
-                        <TabsTrigger value="180 Days">180 Days</TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </div>
+                <div className="flex flex-col space-y-2">
+                  <Tabs defaultValue={selectedPeriod} onValueChange={setSelectedPeriod} className="w-full">
+                    <TabsList className="w-full grid grid-cols-4">
+                      <TabsTrigger value="14 Days">14 Days</TabsTrigger>
+                      <TabsTrigger value="30 Days">30 Days</TabsTrigger>
+                      <TabsTrigger value="90 Days">90 Days</TabsTrigger>
+                      <TabsTrigger value="180 Days">180 Days</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
 
-                  {currentStrategy && (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                              <ChartNoAxesCombined className="h-4 w-4" />
-                              <div className="text-base font-semibold">预期收益</div>
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-2xl font-bold">{currentStrategy.expected_return}%</p>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                              <ShieldAlert className="h-4 w-4" />
-                              <div className="text-base font-semibold">Risk Index</div>
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="flex items-center">
-                              <p className="text-2xl font-bold">{currentStrategy.risk_index}</p>
-                              <div className="ml-2 flex-1">
-                                <Progress
-                                  value={currentStrategy.risk_index}
-                                  className={getRiskColor(currentStrategy.risk_index)}
-                                />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-
+                {currentStrategy && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Coins className="h-4 w-4" />
-                            <div className="text-base font-semibold">Position Allocation</div>
+                            <ChartNoAxesCombined className="h-4 w-4" />
+                            <div className="text-base font-semibold">预期收益</div>
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="h-24 flex">
-                            <PortfolioBarChart
-                              data={[
-                                {
-                                  term: selectedPeriod,
-                                  joule:
-                                    currentStrategy.platforms?.Joule?.positions.reduce(
-                                      (sum, pos) => sum + parseInt(pos.allocation),
-                                      0,
-                                    ) || 0,
-                                  aries:
-                                    currentStrategy.platforms?.Aries?.positions.reduce(
-                                      (sum, pos) => sum + parseInt(pos.allocation),
-                                      0,
-                                    ) || 0,
-                                  hyperion:
-                                    currentStrategy.platforms?.Hyperion?.positions.reduce(
-                                      (sum, pos) => sum + parseInt(pos.allocation),
-                                      0,
-                                    ) || 0,
-                                },
-                              ]}
-                            />
-                          </div>
-
-                          <div className="space-y-4" id="positionAllocationCard">
-                            {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
-                              <div key={platform} className="">
-                                <div className="flex items-center justify-between mb-2">
-                                  <Badge variant="outline" className="mr-2">
-                                    {platform}
-                                  </Badge>
-                                  <span className="font-semibold">{data.positions[0]?.allocation}</span>
-                                </div>
-                                {data.positions.length > 0 ? (
-                                  <ul className="space-y-2">
-                                    {data.positions.map((pos, idx) => (
-                                      <div className="bg-slate-50 p-4 rounded-md text-sm space-y-2">
-                                        <li key={idx}>
-                                          <div className="flex justify-between">
-                                            <span className="font-medium">
-                                              {pos.asset} ({pos.action})
-                                            </span>
-                                          </div>
-                                          <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
-                                          {pos.price_range && (
-                                            <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
-                                              价格区间: {pos.price_range.lower} - {pos.price_range.upper}
-                                            </div>
-                                          )}
-                                        </li>
-
-                                        <Slider
-                                          value={[allocation_num(data.positions[0]?.allocation || "0%") * 100]}
-                                          max={100}
-                                          step={1}
-                                          onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
-                                          className="mb-2"
-                                        />
-                                      </div>
-                                    ))}
-                                  </ul>
-                                ) : (
-                                  <p className="text-sm text-slate-500">No Position Allocated</p>
-                                )}
-                              </div>
-                            ))}
+                          <p className="text-2xl font-bold">{currentStrategy.expected_return}%</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <ShieldAlert className="h-4 w-4" />
+                            <div className="text-base font-semibold">Risk Index</div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center">
+                            <p className="text-2xl font-bold">{currentStrategy.risk_index}</p>
+                            <div className="ml-2 flex-1">
+                              <Progress
+                                value={currentStrategy.risk_index}
+                                className={getRiskColor(currentStrategy.risk_index)}
+                              />
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
                     </div>
-                  )}
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Coins className="h-4 w-4" />
+                          <div className="text-base font-semibold">Position Allocation</div>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="h-24 flex">
+                          <PortfolioBarChart
+                            data={[
+                              {
+                                term: selectedPeriod,
+                                joule:
+                                  currentStrategy.platforms?.Joule?.positions.reduce(
+                                    (sum, pos) => sum + parseInt(pos.allocation),
+                                    0,
+                                  ) || 0,
+                                aries:
+                                  currentStrategy.platforms?.Aries?.positions.reduce(
+                                    (sum, pos) => sum + parseInt(pos.allocation),
+                                    0,
+                                  ) || 0,
+                                hyperion:
+                                  currentStrategy.platforms?.Hyperion?.positions.reduce(
+                                    (sum, pos) => sum + parseInt(pos.allocation),
+                                    0,
+                                  ) || 0,
+                              },
+                            ]}
+                          />
+                        </div>
+
+                        <div className="space-y-4" id="positionAllocationCard">
+                          {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
+                            <div key={platform} className="">
+                              <div className="flex items-center justify-between mb-2">
+                                <Badge variant="outline" className="mr-2">
+                                  {platform}
+                                </Badge>
+                                <span className="font-semibold">{data.positions[0]?.allocation}</span>
+                              </div>
+                              {data.positions.length > 0 ? (
+                                <ul className="space-y-2">
+                                  {data.positions.map((pos, idx) => (
+                                    <div className="bg-slate-50 p-4 rounded-md text-sm space-y-2">
+                                      <li key={idx}>
+                                        <div className="flex justify-between">
+                                          <span className="font-medium">
+                                            {pos.asset} ({pos.action})
+                                          </span>
+                                        </div>
+                                        <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
+                                        {pos.price_range && (
+                                          <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
+                                            价格区间: {pos.price_range.lower} - {pos.price_range.upper}
+                                          </div>
+                                        )}
+                                      </li>
+
+                                      <Slider
+                                        value={[allocation_num(data.positions[0]?.allocation || "0%") * 100]}
+                                        max={100}
+                                        step={1}
+                                        onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
+                                        className="mb-2"
+                                      />
+                                    </div>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p className="text-sm text-slate-500">No Position Allocated</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
 
                 <div className="flex flex-col space-y-2">
+                  <p className="text-xs opacity-70">
+                    *Executing trades will allocate your assets according to the selected strategy
+                  </p>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
-                      placeholder="1000"
+                      placeholder="100 USDC"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       className="flex-1"
                     />
-                    <text className="opacity-70">USDC</text>
                     <Button
                       onClick={handleExecute}
                       disabled={!currentStrategy || isExecuting || !amount}
@@ -412,7 +414,6 @@ export function ExeuteTrade() {
                       )}
                     </Button>
                   </div>
-                  <p className="text-xs text-slate-500">*Executing trades will allocate your assets according to the selected strategy</p>
                 </div>
               </div>
             )}
