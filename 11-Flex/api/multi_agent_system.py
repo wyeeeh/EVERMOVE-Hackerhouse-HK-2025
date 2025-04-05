@@ -63,6 +63,8 @@ async def defi_research_agent(state: State):
     2. 各代币的风险评估
     3. 基于用户风险偏好推荐的借贷策略（按比例分配，不需要具体金额）
     4. LTV和清算风险分析
+    Aries, Joule目前有3%的lend bonus，记得处理
+    目前APT-USDC的APR 为166%，记得处理
     
     输出为结构化JSON格式。
     """
@@ -341,9 +343,10 @@ async def portfolio_manager(state: State):
     - 只需要添加流动性以及lend usdc 不需要其他操作
     - 请直接输出JSON，不要使用Markdown代码块或其他格式
     - 必须严格按照上述JSON格式输出
+    - 
     - 确保所有平台都有分配，且每个时间段内的所有分配比例总和为100%，"allocation"比例应该为两位小数，例如37.21，不要是整数。
-    - est APY 要实际计算，忠于原始数据，是仓位的加权平均，不要受其他影响
-    - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币以及usdc-apt池子
+    - est APY 要实际计算，给出计算过程
+    - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币以及usdc-apt池子,usdt 
     """
 
     # 调用LLM获取投资组合建议
