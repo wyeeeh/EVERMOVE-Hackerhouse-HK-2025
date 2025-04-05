@@ -1,15 +1,19 @@
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Joule_borrowToken, Joule_lendToken } from "@/utils/JouleUtil"
-import { Aries_borrowToken, Aries_lendToken } from "@/utils/AriesUtil"
-import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants"
-import { getaptprice } from "@/utils/HyperionUtil"
-import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { create_hyperion_positions } from "@/utils/HyperionUtil"
+import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
+
+
+import { Joule_borrowToken, Joule_lendToken } from "@/utils/JouleUtil";
+import { Aries_borrowToken, Aries_lendToken } from "@/utils/AriesUtil";
+import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants";
+import { getaptprice } from "@/utils/HyperionUtil";
+
+import { useState, useEffect } from "react";
+import { create_hyperion_positions } from "@/utils/HyperionUtil";
 
 interface PlatformPosition {
   asset: string;
@@ -119,9 +123,9 @@ export function ExeuteTrade() {
 
   // 获取风险等级对应的颜色
   const getRiskColor = (riskIndex: number): string => {
-    if (riskIndex < 40) return "bg-green-500";
-    if (riskIndex < 70) return "bg-yellow-500";
-    return "bg-red-500";
+    if (riskIndex < 40) return "[&>*]:bg-green-500";
+    if (riskIndex < 70) return "[&>*]:bg-yellow-500";
+    return "[&>*]:bg-red-500";
   };
 
   // 执行交易
@@ -134,26 +138,31 @@ export function ExeuteTrade() {
     setIsExecuting(true);
 
     try {
-        const strategy : TradeStrategy = getCurrentStrategy();
-        //Lend Joule:
-        let aptprice = await getaptprice();
-        const pos1 = strategy.platforms?.Joule?.positions[0]!;
-        const amount1 = Number(amount)*allocation_num(pos1?.allocation) * Math.pow(10, coin_decimals_map[pos1.asset])
-        await Joule_lendToken(amount1 , coin_address_map[pos1.asset], '2', false, coin_is_fungible[pos1.asset])
-        //Borrow Joule: 
-        await Joule_borrowToken(Number(Math.floor(amount1 / aptprice * 0.7 * 100)), coin_address_map["APT"], "2", false)
-        //Lend Aries:
-        const pos2 = strategy.platforms?.Aries?.positions[0]!;
-        const amount2 = Number(amount)*allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
-        await Aries_lendToken(amount2, pos2.asset)
-        //Borrow Aries:
-        await Aries_borrowToken(Number(Math.floor(amount2 / aptprice * 0.7 * 100)), "APT")
-        //Create Hyperion:
-        const pos3= strategy.platforms?.Hyperion?.positions[0]!;
-        let amount3 = Number(amount)*allocation_num(pos3?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset])
-        amount3 = Math.floor(amount3 / aptprice * 100 / 2);
-        aptprice = await getaptprice();
-        await create_hyperion_positions(amount3, pos3.price_range!.lower, pos3.price_range!.upper);
+      const strategy: TradeStrategy = getCurrentStrategy();
+      //Lend Joule:
+      let aptprice = await getaptprice();
+      const pos1 = strategy.platforms?.Joule?.positions[0]!;
+      const amount1 = Number(amount) * allocation_num(pos1?.allocation) * Math.pow(10, coin_decimals_map[pos1.asset]);
+      await Joule_lendToken(amount1, coin_address_map[pos1.asset], "2", false, coin_is_fungible[pos1.asset]);
+      //Borrow Joule:
+      await Joule_borrowToken(
+        Number(Math.floor((amount1 / aptprice) * 0.7 * 100)),
+        coin_address_map["APT"],
+        "2",
+        false,
+      );
+      //Lend Aries:
+      const pos2 = strategy.platforms?.Aries?.positions[0]!;
+      const amount2 = Number(amount) * allocation_num(pos2?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset]);
+      await Aries_lendToken(amount2, pos2.asset);
+      //Borrow Aries:
+      await Aries_borrowToken(Number(Math.floor((amount2 / aptprice) * 0.7 * 100)), "APT");
+      //Create Hyperion:
+      const pos3 = strategy.platforms?.Hyperion?.positions[0]!;
+      let amount3 = Number(amount) * allocation_num(pos3?.allocation) * Math.pow(10, coin_decimals_map[pos2.asset]);
+      amount3 = Math.floor(((amount3 / aptprice) * 100) / 2);
+      aptprice = await getaptprice();
+      await create_hyperion_positions(amount3, pos3.price_range!.lower, pos3.price_range!.upper);
     } catch (error) {
       console.error("执行交易失败:", error);
       alert(`交易执行失败: ${error}`);
@@ -208,35 +217,51 @@ export function ExeuteTrade() {
               {currentStrategy && (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white p-3 rounded-md shadow-sm">
-                      <div className="flex items-center mb-1">
-                        <TrendingUp className="h-4 w-4 mr-2 text-green-600" />
-                        <p className="text-sm font-semibold">预期收益</p>
-                      </div>
-                      <p className="text-xl font-bold text-green-600">{currentStrategy.expected_return}%</p>
-                    </div>
-                    <div className="bg-white p-3 rounded-md shadow-sm">
-                      <div className="flex items-center mb-1">
-                        <ShieldAlert className="h-4 w-4 mr-2 text-amber-600" />
-                        <p className="text-sm font-semibold">风险指数</p>
-                      </div>
+                    <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
+                        <div className="text-base font-semibold">预期收益</div>
+                      </CardTitle>
+                    </CardHeader>
+                      <CardContent>
+                      <p className="text-2xl font-bold">
+                        {currentStrategy.expected_return}%
+                      </p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <ShieldAlert className="h-4 w-4 text-amber-600" />
+                        <div className="text-base font-semibold">风险指数</div>
+                      </CardTitle>
+                    </CardHeader>
+                      <CardContent>
                       <div className="flex items-center">
-                        <p className="text-xl font-bold">{currentStrategy.risk_index}</p>
+                        <p className="text-2xl font-bold">
+                          {currentStrategy.risk_index}
+                        </p>
                         <div className="ml-2 flex-1">
-                          <div className={`h-2 w-full rounded-full overflow-hidden bg-gray-200`}>
+                          {/* <div className={`h-4 w-full rounded-full overflow-hidden bg-gray-200`}>
                             <div
                               className={`h-full ${getRiskColor(currentStrategy.risk_index)}`}
                               style={{ width: `${currentStrategy.risk_index}%` }}
                             ></div>
-                          </div>
+                          </div> */}
+                          <Progress 
+                            value={currentStrategy.risk_index} 
+                            className={getRiskColor(currentStrategy.risk_index)}
+                          />
                         </div>
                       </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   </div>
 
                   <div className="bg-white p-4 rounded-md shadow-sm">
                     <div className="flex items-center mb-3">
-                      <Coins className="h-4 w-4 mr-2 text-blue-600" />
+                      <Coins className="h-4 w-4 text-blue-600" />
                       <p className="text-sm font-semibold">资产分配</p>
                     </div>
                     <div className="space-y-4">
