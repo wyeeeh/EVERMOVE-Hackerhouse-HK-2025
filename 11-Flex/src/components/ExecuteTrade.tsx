@@ -71,6 +71,7 @@ export function ExeuteTrade() {
   const [currentStrategy, setCurrentStrategy] = useState<TradeStrategy>();
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
+
   // 获取当前选择的策略
   const getCurrentStrategy = (): TradeStrategy => {
     const strategy =
@@ -133,6 +134,12 @@ export function ExeuteTrade() {
     if (riskIndex < 40) return "[&>*]:bg-green-500";
     if (riskIndex < 70) return "[&>*]:bg-yellow-500";
     return "[&>*]:bg-red-500";
+  };
+
+  // 计算操作映射
+  const actionDisplayMap: Record<string, string> = {
+    'lend': 'Deposit',
+    'add_liquidity': 'Add LP'
   };
 
   // 执行交易
@@ -246,7 +253,7 @@ export function ExeuteTrade() {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
-              <label className="font-medium">Select Investment Terms</label>
+              <label className="text-base">Select Investment Terms</label>
               {lastUpdated && <span className="text-xs opacity-70">Last Updated: {lastUpdated}</span>}
             </div>
           </CardHeader>
@@ -355,21 +362,25 @@ export function ExeuteTrade() {
                                 <span className="font-semibold">{data.positions[0]?.allocation}</span>
                               </div>
                               {data.positions.length > 0 ? (
-                                <ul className="space-y-2">
+                                <ul className="space-y-6">
                                   {data.positions.map((pos, idx) => (
-                                    <div className="bg-slate-50 p-4 rounded-md text-sm space-y-2">
+                                    <Card className="p-4 space-y-4">
                                       <li key={idx}>
                                         <div className="flex justify-between">
-                                          <span className="font-medium">
-                                            {pos.asset} ({pos.action})
+                                          <span className="text-base">
+                                            {pos.asset} 
+                                          </span>
+                                          <span className="text-base">
+                                          {actionDisplayMap[pos.action] || pos.action}
                                           </span>
                                         </div>
-                                        <div className="text-xs text-slate-600 mt-1">{pos.rationale}</div>
-                                        {pos.price_range && (
-                                          <div className="mt-1 text-xs bg-blue-50 p-1 rounded">
-                                            价格区间: {pos.price_range.lower} - {pos.price_range.upper}
-                                          </div>
+                                        <div className="text-sm opacity-70 flex justify-between">
+                                          {pos.rationale}
+                                          {pos.price_range && (
+                                            <span>Price Range: {pos.price_range.lower} - {pos.price_range.upper}
+                                            </span>
                                         )}
+                                          </div>
                                       </li>
 
                                       <Slider
@@ -379,7 +390,7 @@ export function ExeuteTrade() {
                                         onValueChange={(value) => handleSliderChange(platform, value[0] / 100)}
                                         className="mb-2"
                                       />
-                                    </div>
+                                    </Card>
                                   ))}
                                 </ul>
                               ) : (
