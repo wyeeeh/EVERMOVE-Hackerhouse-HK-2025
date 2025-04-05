@@ -69,9 +69,9 @@ export function Platform() {
             />
         </div>
 
-        <div id="Strategy">
+        {/* <div id="Strategy">
         <Strategy />
-        </div>
+        </div> */}
 
 
         <div id="ExeuteTrade">

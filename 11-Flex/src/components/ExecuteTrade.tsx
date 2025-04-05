@@ -6,14 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, TrendingUp, ShieldAlert, Coins } from "lucide-react";
 
-
+import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants";
 import { Joule_borrowToken, Joule_lendToken } from "@/utils/JouleUtil";
 import { Aries_borrowToken, Aries_lendToken } from "@/utils/AriesUtil";
-import { coin_address_map, coin_is_fungible, coin_decimals, coin_decimals_map } from "@/constants";
-import { getaptprice } from "@/utils/HyperionUtil";
+import { getaptprice, create_hyperion_positions } from "@/utils/HyperionUtil";
+
+import { PortfolioBarChart } from "@/components/StackedBarChart";
 
 import { useState, useEffect } from "react";
-import { create_hyperion_positions } from "@/utils/HyperionUtil";
 
 interface PlatformPosition {
   asset: string;
@@ -233,7 +233,7 @@ export function ExeuteTrade() {
                     <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <ShieldAlert className="h-4 w-4 text-amber-600" />
+                        <ShieldAlert className="h-4 w-4" />
                         <div className="text-base font-semibold">风险指数</div>
                       </CardTitle>
                     </CardHeader>
@@ -243,12 +243,6 @@ export function ExeuteTrade() {
                           {currentStrategy.risk_index}
                         </p>
                         <div className="ml-2 flex-1">
-                          {/* <div className={`h-4 w-full rounded-full overflow-hidden bg-gray-200`}>
-                            <div
-                              className={`h-full ${getRiskColor(currentStrategy.risk_index)}`}
-                              style={{ width: `${currentStrategy.risk_index}%` }}
-                            ></div>
-                          </div> */}
                           <Progress 
                             value={currentStrategy.risk_index} 
                             className={getRiskColor(currentStrategy.risk_index)}
@@ -259,10 +253,30 @@ export function ExeuteTrade() {
                     </Card>
                   </div>
 
-                  <div className="bg-white p-4 rounded-md shadow-sm">
-                    <div className="flex items-center mb-3">
-                      <Coins className="h-4 w-4 text-blue-600" />
-                      <p className="text-sm font-semibold">资产分配</p>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Coins className="h-4 w-4" />
+                        <div className="text-base font-semibold">资产分配</div>
+                      </CardTitle>
+                    </CardHeader>
+                      <CardContent>
+                      <div className="h-32 flex">
+                    <PortfolioBarChart
+                      data={[{
+                        term: selectedPeriod,
+                        joule: currentStrategy.platforms?.Joule?.positions.reduce(
+                          (sum, pos) => sum + parseInt(pos.allocation), 0
+                        ) || 0,
+                        aries: currentStrategy.platforms?.Aries?.positions.reduce(
+                          (sum, pos) => sum + parseInt(pos.allocation), 0
+                        ) || 0,
+                        hyperion: currentStrategy.platforms?.Hyperion?.positions.reduce(
+                          (sum, pos) => sum + parseInt(pos.allocation), 0
+                        ) || 0,
+                      }]}
+                    />
                     </div>
                     <div className="space-y-4">
                       {Object.entries(currentStrategy.platforms).map(([platform, data]) => (
@@ -297,7 +311,8 @@ export function ExeuteTrade() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                      </CardContent>
+                    </Card>
                 </div>
               )}
             </div>
