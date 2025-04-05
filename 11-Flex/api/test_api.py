@@ -66,7 +66,7 @@ async def main():
         return
 
     # 测试不同风险偏好
-    risk_preferences = ["low", "medium", "high"]
+    risk_preferences = [ "medium"]
     custom_prompt = "我想关注APT生态系统的发展，并根据不同的投资时间段进行资产配置"
 
     results = {}
