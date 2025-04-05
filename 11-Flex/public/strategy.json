@@ -9,7 +9,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "50.23%",
-            "rationale": "高APY借贷收益"
+            "rationale": "High APY lending returns"
           }
         ]
       },
@@ -19,7 +19,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "19.42%",
-            "rationale": "稳定币风险对冲"
+            "rationale": "Stablecoin risk hedging"
           }
         ]
       },
@@ -34,7 +34,7 @@
               "lower": 4.8,
               "upper": 6.1
             },
-            "rationale": "短期价格反弹机会"
+            "rationale": "Short-term price rebound opportunity"
           }
         ]
       }
@@ -50,7 +50,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "45.42%",
-            "rationale": "高收益低风险"
+            "rationale": "High yield with low risk"
           }
         ]
       },
@@ -60,7 +60,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "15.3%",
-            "rationale": "稳定收益基础"
+            "rationale": "Stable yield foundation"
           }
         ]
       },
@@ -75,7 +75,7 @@
               "lower": 4.6,
               "upper": 6.3
             },
-            "rationale": "中短期趋势布局"
+            "rationale": "Medium-short term trend positioning"
           }
         ]
       }
@@ -91,7 +91,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "38.8%",
-            "rationale": "稳定收益核心"
+            "rationale": "Stable yield core"
           }
         ]
       },
@@ -101,7 +101,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "10.69%",
-            "rationale": "分散风险配置"
+            "rationale": "Diversified risk allocation"
           }
         ]
       },
@@ -116,7 +116,7 @@
               "lower": 4.3,
               "upper": 6.5
             },
-            "rationale": "长期生态增长"
+            "rationale": "Long-term ecosystem growth"
           }
         ]
       }
@@ -132,7 +132,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "32.56%",
-            "rationale": "基础收益保障"
+            "rationale": "Base yield protection"
           }
         ]
       },
@@ -142,7 +142,7 @@
             "asset": "USDC",
             "action": "lend",
             "allocation": "15.01%",
-            "rationale": "中期价格潜力"
+            "rationale": "Medium-term price potential"
           }
         ]
       },
@@ -157,7 +157,7 @@
               "lower": 4.0,
               "upper": 7.0
             },
-            "rationale": "宽幅长期布局"
+            "rationale": "Wide-range long-term positioning"
           }
         ]
       }

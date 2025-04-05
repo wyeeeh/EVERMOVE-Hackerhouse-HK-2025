@@ -346,6 +346,7 @@ async def portfolio_manager(state: State):
     - est APY 要实际计算，给出计算过程,你需要计算每个仓位的APY然后加权平均 ，之后在按照时间计算实际预期return
     - 只需要添加流动性以及lend usdc 不需要其他操作,只需要考虑usdc以及apt代币lend APY有%3额外bonus 以及usdc-apt池子 APY166%,usdt 
     - 确保所有平台都有分配
+    - 输出语言为英文
     """
 
     # 调用LLM获取投资组合建议
