@@ -216,6 +216,8 @@ export function ExeuteTrade() {
     });
   
     setCurrentStrategy(updatedStrategy);
+
+    console.log("Updated strategy:", updatedStrategy);
   };
 
   return (
